@@ -36,16 +36,18 @@
 #define SX128X_HAL_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-/*
+    /*
  * -----------------------------------------------------------------------------
  * --- DEPENDENCIES ------------------------------------------------------------
  */
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "sx128x_types.h"
 
 /*
  * -----------------------------------------------------------------------------
@@ -60,31 +62,62 @@ extern "C" {
 /**
  * @brief Write this to SPI bus while reading data, or as a dummy/placeholder
  */
-#define SX128X_NOP ( 0x00 )
+#define SX128X_NOP (0x00)
 
-/*
+    /*
  * -----------------------------------------------------------------------------
  * --- PUBLIC TYPES ------------------------------------------------------------
  */
 
-/**
+    /**
+@struct lgw_conf_board_s
+@brief Configuration structure for board specificities
+*/
+    struct lgw_conf_board_s
+    {
+        bool lorawan_public;     /*!> Enable ONLY for *public* networks using the LoRa MAC protocol */
+        uint8_t clksrc;          /*!> Index of RF chain which provides clock to concentrator */
+        bool full_duplex;        /*!> Indicates if the gateway operates in full duplex mode or not */
+        lgw_com_type_t com_type; /*!> The COMmunication interface (SPI/USB) to connect to the SX1302 */
+        char com_path[64];       /*!> Path to access the COM device to connect to the SX1302 */
+    };
+
+    typedef struct lgw_context_s
+    {
+        /* Global context */
+        bool is_started;
+        struct lgw_conf_board_s board_cfg;
+        /* RX context */
+        struct lgw_conf_demod_s demod_cfg;
+        struct lgw_conf_rxif_s lora_service_cfg; /* LoRa service channel config parameters */
+        struct lgw_conf_rxif_s fsk_cfg;          /* FSK channel config parameters */
+        /* TX context */
+        struct lgw_tx_gain_lut_s tx_gain_lut[LGW_RF_CHAIN_NB];
+        /* Misc */
+        struct lgw_conf_ftime_s ftime_cfg;
+        struct lgw_conf_sx1261_s sx1261_cfg;
+        /* Debug */
+        struct lgw_conf_debug_s debug_cfg;
+    } lgw_context_t;
+
+    /**
  * @brief HAL status return codes
  *
  * The status is to be returned by the HAL functions to indicate to the driver the correct or incorrect completion of a
  * communication with the chip
  */
-typedef enum sx128x_hal_status_e
-{
-    SX128X_HAL_STATUS_OK    = 0,
-    SX128X_HAL_STATUS_ERROR = 3,
-} sx128x_hal_status_t;
+    typedef enum sx128x_hal_status_e
+    {
+        SX128X_HAL_STATUS_OK = 0,
+        SX128X_HAL_STATUS_ERROR = 3,
+    } sx128x_hal_status_t;
 
-/*
+    /*
  * -----------------------------------------------------------------------------
  * --- PUBLIC FUNCTIONS PROTOTYPES ---------------------------------------------
  */
 
-/**
+    /**
  * @brief Radio data transfer - write
  *
  * @remark Must be implemented by the upper layer
@@ -99,10 +132,10 @@ typedef enum sx128x_hal_status_e
  *
  * @retval status     Operation status
  */
-sx128x_hal_status_t sx128x_hal_write( const void* context, const uint8_t* command, const uint16_t command_length,
-                                      const uint8_t* data, const uint16_t data_length );
+    sx128x_hal_status_t sx128x_hal_write(const void *context, const uint8_t *command, const uint16_t command_length,
+                                         const uint8_t *data, const uint16_t data_length);
 
-/**
+    /**
  * @brief Radio data transfer - read
  *
  * @remark Must be implemented by the upper layer
@@ -117,10 +150,10 @@ sx128x_hal_status_t sx128x_hal_write( const void* context, const uint8_t* comman
  *
  * @retval status     Operation status
  */
-sx128x_hal_status_t sx128x_hal_read( const void* context, const uint8_t* command, const uint16_t command_length,
-                                     uint8_t* data, const uint16_t data_length );
+    sx128x_hal_status_t sx128x_hal_read(const void *context, const uint8_t *command, const uint16_t command_length,
+                                        uint8_t *data, const uint16_t data_length);
 
-/**
+    /**
  * @brief Reset the radio
  *
  * @remark Must be implemented by the upper layer
@@ -129,9 +162,9 @@ sx128x_hal_status_t sx128x_hal_read( const void* context, const uint8_t* command
  *
  * @retval status    Operation status
  */
-sx128x_hal_status_t sx128x_hal_reset( const void* context );
+    sx128x_hal_status_t sx128x_hal_reset(const void *context);
 
-/**
+    /**
  * @brief Wake the radio up.
  *
  * @remark Must be implemented by the upper layer
@@ -140,12 +173,12 @@ sx128x_hal_status_t sx128x_hal_reset( const void* context );
 
  * @retval status    Operation status
  */
-sx128x_hal_status_t sx128x_hal_wakeup( const void* context );
+    sx128x_hal_status_t sx128x_hal_wakeup(const void *context);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // SX128X_HAL_H
+#endif // SX128X_HAL_H
 
 /* --- EOF ------------------------------------------------------------------ */

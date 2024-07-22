@@ -36,10 +36,11 @@
 #define SX128X_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-/*
+    /*
  * -----------------------------------------------------------------------------
  * --- DEPENDENCIES ------------------------------------------------------------
  */
@@ -65,855 +66,855 @@ extern "C" {
 /**
  * @brief Minimum Tx power
  */
-#define SX128X_PWR_MIN ( -18 )
+#define SX128X_PWR_MIN (-18)
 
 /**
  * @brief Maximum Tx power
  */
-#define SX128X_PWR_MAX ( 13 )
+#define SX128X_PWR_MAX (13)
 
-/*
+    /*
  * -----------------------------------------------------------------------------
  * --- PUBLIC TYPES ------------------------------------------------------------
  */
 
-/**
+    /**
  * @brief API return status
  */
-typedef enum sx128x_status_e
-{
-    SX128X_STATUS_OK = 0,
-    SX128X_STATUS_UNSUPPORTED_FEATURE,
-    SX128X_STATUS_UNKNOWN_VALUE,
-    SX128X_STATUS_ERROR,
-} sx128x_status_t;
+    typedef enum sx128x_status_e
+    {
+        SX128X_STATUS_OK = 0,
+        SX128X_STATUS_UNSUPPORTED_FEATURE,
+        SX128X_STATUS_UNKNOWN_VALUE,
+        SX128X_STATUS_ERROR,
+    } sx128x_status_t;
 
-/**
+    /**
  * @brief Sleep modes configurations
  */
-enum sx128x_sleep_cfg_e
-{
-    SX128X_SLEEP_CFG_DATA_RETENTION        = ( 1 << 0 ),
-    SX128X_SLEEP_CFG_DATA_BUFFER_RETENTION = ( 1 << 1 ),
-};
+    enum sx128x_sleep_cfg_e
+    {
+        SX128X_SLEEP_CFG_DATA_RETENTION = (1 << 0),
+        SX128X_SLEEP_CFG_DATA_BUFFER_RETENTION = (1 << 1),
+    };
 
-/**
+    /**
  * @brief Standby mode configurations
  */
-typedef enum sx128x_standby_cfg_e
-{
-    SX128X_STANDBY_CFG_RC   = 0x00,
-    SX128X_STANDBY_CFG_XOSC = 0x01,
-} sx128x_standby_cfg_t;
+    typedef enum sx128x_standby_cfg_e
+    {
+        SX128X_STANDBY_CFG_RC = 0x00,
+        SX128X_STANDBY_CFG_XOSC = 0x01,
+    } sx128x_standby_cfg_t;
 
-/**
+    /**
  * @brief Power regulations used to power the device
  */
-typedef enum sx128x_reg_mod_e
-{
-    SX128X_REG_MODE_LDO  = 0x00,  // default
-    SX128X_REG_MODE_DCDC = 0x01,
-} sx128x_reg_mod_t;
+    typedef enum sx128x_reg_mod_e
+    {
+        SX128X_REG_MODE_LDO = 0x00, // default
+        SX128X_REG_MODE_DCDC = 0x01,
+    } sx128x_reg_mod_t;
 
-/**
+    /**
  * @brief Tick sizes available for Rx/Tx timeout operations
  */
-typedef enum sx128x_tick_size_e
-{
-    SX128X_TICK_SIZE_0015_US = 0x00,
-    SX128X_TICK_SIZE_0062_US = 0x01,
-    SX128X_TICK_SIZE_1000_US = 0x02,
-    SX128X_TICK_SIZE_4000_US = 0x03,
-} sx128x_tick_size_t;
+    typedef enum sx128x_tick_size_e
+    {
+        SX128X_TICK_SIZE_0015_US = 0x00,
+        SX128X_TICK_SIZE_0062_US = 0x01,
+        SX128X_TICK_SIZE_1000_US = 0x02,
+        SX128X_TICK_SIZE_4000_US = 0x03,
+    } sx128x_tick_size_t;
 
-/**
+    /**
  * @brief IRQ definition
  */
-enum sx128x_irq_mask_e
-{
-    SX128X_IRQ_NONE                      = ( 0 << 0 ),
-    SX128X_IRQ_TX_DONE                   = ( 1 << 0 ),
-    SX128X_IRQ_RX_DONE                   = ( 1 << 1 ),
-    SX128X_IRQ_SYNC_WORD_VALID           = ( 1 << 2 ),
-    SX128X_IRQ_SYNC_WORD_ERROR           = ( 1 << 3 ),
-    SX128X_IRQ_HEADER_VALID              = ( 1 << 4 ),
-    SX128X_IRQ_HEADER_ERROR              = ( 1 << 5 ),
-    SX128X_IRQ_CRC_ERROR                 = ( 1 << 6 ),
-    SX128X_IRQ_RANGING_SLV_RES_DONE      = ( 1 << 7 ),
-    SX128X_IRQ_RANGING_SLV_REQ_DISCARDED = ( 1 << 8 ),
-    SX128X_IRQ_RANGING_MST_RES_VALID     = ( 1 << 9 ),
-    SX128X_IRQ_RANGING_MST_TIMEOUT       = ( 1 << 10 ),
-    SX128X_IRQ_RANGING_SLV_REQ_VALID     = ( 1 << 11 ),
-    SX128X_IRQ_CAD_DONE                  = ( 1 << 12 ),
-    SX128X_IRQ_CAD_DETECTED              = ( 1 << 13 ),
-    SX128X_IRQ_TIMEOUT                   = ( 1 << 14 ),
-    SX128X_IRQ_PREAMBLE_DETECTED         = ( 1 << 15 ),
-    SX128X_IRQ_ADV_RANGING_VALID         = ( 1 << 15 ),
-    SX128X_IRQ_ALL = SX128X_IRQ_TX_DONE | SX128X_IRQ_RX_DONE | SX128X_IRQ_SYNC_WORD_VALID | SX128X_IRQ_SYNC_WORD_ERROR |
-                     SX128X_IRQ_HEADER_VALID | SX128X_IRQ_HEADER_ERROR | SX128X_IRQ_CRC_ERROR |
-                     SX128X_IRQ_RANGING_SLV_RES_DONE | SX128X_IRQ_RANGING_SLV_REQ_DISCARDED |
-                     SX128X_IRQ_RANGING_MST_RES_VALID | SX128X_IRQ_RANGING_MST_TIMEOUT |
-                     SX128X_IRQ_RANGING_SLV_REQ_VALID | SX128X_IRQ_CAD_DONE | SX128X_IRQ_CAD_DETECTED |
-                     SX128X_IRQ_TIMEOUT | SX128X_IRQ_PREAMBLE_DETECTED | SX128X_IRQ_ADV_RANGING_VALID,
-};
+    enum sx128x_irq_mask_e
+    {
+        SX128X_IRQ_NONE = (0 << 0),
+        SX128X_IRQ_TX_DONE = (1 << 0),
+        SX128X_IRQ_RX_DONE = (1 << 1),
+        SX128X_IRQ_SYNC_WORD_VALID = (1 << 2),
+        SX128X_IRQ_SYNC_WORD_ERROR = (1 << 3),
+        SX128X_IRQ_HEADER_VALID = (1 << 4),
+        SX128X_IRQ_HEADER_ERROR = (1 << 5),
+        SX128X_IRQ_CRC_ERROR = (1 << 6),
+        SX128X_IRQ_RANGING_SLV_RES_DONE = (1 << 7),
+        SX128X_IRQ_RANGING_SLV_REQ_DISCARDED = (1 << 8),
+        SX128X_IRQ_RANGING_MST_RES_VALID = (1 << 9),
+        SX128X_IRQ_RANGING_MST_TIMEOUT = (1 << 10),
+        SX128X_IRQ_RANGING_SLV_REQ_VALID = (1 << 11),
+        SX128X_IRQ_CAD_DONE = (1 << 12),
+        SX128X_IRQ_CAD_DETECTED = (1 << 13),
+        SX128X_IRQ_TIMEOUT = (1 << 14),
+        SX128X_IRQ_PREAMBLE_DETECTED = (1 << 15),
+        SX128X_IRQ_ADV_RANGING_VALID = (1 << 15),
+        SX128X_IRQ_ALL = SX128X_IRQ_TX_DONE | SX128X_IRQ_RX_DONE | SX128X_IRQ_SYNC_WORD_VALID | SX128X_IRQ_SYNC_WORD_ERROR |
+                         SX128X_IRQ_HEADER_VALID | SX128X_IRQ_HEADER_ERROR | SX128X_IRQ_CRC_ERROR |
+                         SX128X_IRQ_RANGING_SLV_RES_DONE | SX128X_IRQ_RANGING_SLV_REQ_DISCARDED |
+                         SX128X_IRQ_RANGING_MST_RES_VALID | SX128X_IRQ_RANGING_MST_TIMEOUT |
+                         SX128X_IRQ_RANGING_SLV_REQ_VALID | SX128X_IRQ_CAD_DONE | SX128X_IRQ_CAD_DETECTED |
+                         SX128X_IRQ_TIMEOUT | SX128X_IRQ_PREAMBLE_DETECTED | SX128X_IRQ_ADV_RANGING_VALID,
+    };
 
-/**
+    /**
  * @brief IRQ bit mask definition.
  *
  * @see sx128x_irq_mask_e
  */
-typedef uint16_t sx128x_irq_mask_t;
+    typedef uint16_t sx128x_irq_mask_t;
 
-/**
+    /**
  * @brief Possible packet types (i.e. modem)
  */
-typedef enum sx128x_pkt_type_e
-{
-    SX128X_PKT_TYPE_GFSK    = 0x00,
-    SX128X_PKT_TYPE_LORA    = 0x01,
-    SX128X_PKT_TYPE_RANGING = 0x02,
-    SX128X_PKT_TYPE_FLRC    = 0x03,
-    SX128X_PKT_TYPE_BLE     = 0x04,
-} sx128x_pkt_type_t;
+    typedef enum sx128x_pkt_type_e
+    {
+        SX128X_PKT_TYPE_GFSK = 0x00,
+        SX128X_PKT_TYPE_LORA = 0x01,
+        SX128X_PKT_TYPE_RANGING = 0x02,
+        SX128X_PKT_TYPE_FLRC = 0x03,
+        SX128X_PKT_TYPE_BLE = 0x04,
+    } sx128x_pkt_type_t;
 
-/**
+    /**
  * @brief Ramping times for the power amplifier
  */
-typedef enum sx128x_ramp_time_e
-{
-    SX128X_RAMP_02_US = 0x00,
-    SX128X_RAMP_04_US = 0x20,
-    SX128X_RAMP_06_US = 0x40,
-    SX128X_RAMP_08_US = 0x60,
-    SX128X_RAMP_10_US = 0x80,
-    SX128X_RAMP_12_US = 0xA0,
-    SX128X_RAMP_16_US = 0xC0,
-    SX128X_RAMP_20_US = 0xE0,
-} sx128x_ramp_time_t;
+    typedef enum sx128x_ramp_time_e
+    {
+        SX128X_RAMP_02_US = 0x00,
+        SX128X_RAMP_04_US = 0x20,
+        SX128X_RAMP_06_US = 0x40,
+        SX128X_RAMP_08_US = 0x60,
+        SX128X_RAMP_10_US = 0x80,
+        SX128X_RAMP_12_US = 0xA0,
+        SX128X_RAMP_16_US = 0xC0,
+        SX128X_RAMP_20_US = 0xE0,
+    } sx128x_ramp_time_t;
 
-/**
+    /**
  * @brief Combinations of bitrate and bandwidth for GFSK and BLE packet types
  *
  * @remark The bitrate is expressed in Mb/s and the bandwidth in MHz
  */
-typedef enum sx128x_gfsk_ble_br_bw_e
-{
-    SX128X_GFSK_BLE_BR_2_000_BW_2_4 = 0x04,
-    SX128X_GFSK_BLE_BR_1_600_BW_2_4 = 0x28,
-    SX128X_GFSK_BLE_BR_1_000_BW_2_4 = 0x4C,
-    SX128X_GFSK_BLE_BR_1_000_BW_1_2 = 0x45,
-    SX128X_GFSK_BLE_BR_0_800_BW_2_4 = 0x70,
-    SX128X_GFSK_BLE_BR_0_800_BW_1_2 = 0x69,
-    SX128X_GFSK_BLE_BR_0_500_BW_1_2 = 0x8D,
-    SX128X_GFSK_BLE_BR_0_500_BW_0_6 = 0x86,
-    SX128X_GFSK_BLE_BR_0_400_BW_1_2 = 0xB1,
-    SX128X_GFSK_BLE_BR_0_400_BW_0_6 = 0xAA,
-    SX128X_GFSK_BLE_BR_0_250_BW_0_6 = 0xCE,
-    SX128X_GFSK_BLE_BR_0_250_BW_0_3 = 0xC7,
-    SX128X_GFSK_BLE_BR_0_125_BW_0_3 = 0xEF,
-} sx128x_gfsk_ble_br_bw_t;
+    typedef enum sx128x_gfsk_ble_br_bw_e
+    {
+        SX128X_GFSK_BLE_BR_2_000_BW_2_4 = 0x04,
+        SX128X_GFSK_BLE_BR_1_600_BW_2_4 = 0x28,
+        SX128X_GFSK_BLE_BR_1_000_BW_2_4 = 0x4C,
+        SX128X_GFSK_BLE_BR_1_000_BW_1_2 = 0x45,
+        SX128X_GFSK_BLE_BR_0_800_BW_2_4 = 0x70,
+        SX128X_GFSK_BLE_BR_0_800_BW_1_2 = 0x69,
+        SX128X_GFSK_BLE_BR_0_500_BW_1_2 = 0x8D,
+        SX128X_GFSK_BLE_BR_0_500_BW_0_6 = 0x86,
+        SX128X_GFSK_BLE_BR_0_400_BW_1_2 = 0xB1,
+        SX128X_GFSK_BLE_BR_0_400_BW_0_6 = 0xAA,
+        SX128X_GFSK_BLE_BR_0_250_BW_0_6 = 0xCE,
+        SX128X_GFSK_BLE_BR_0_250_BW_0_3 = 0xC7,
+        SX128X_GFSK_BLE_BR_0_125_BW_0_3 = 0xEF,
+    } sx128x_gfsk_ble_br_bw_t;
 
-/**
+    /**
  * @brief Modulation indexes for GFSK and BLE packet types
  */
-typedef enum sx128x_gfsk_ble_mod_ind_s
-{
-    SX128X_GFSK_BLE_MOD_IND_0_35 = 0,
-    SX128X_GFSK_BLE_MOD_IND_0_50 = 1,
-    SX128X_GFSK_BLE_MOD_IND_0_75 = 2,
-    SX128X_GFSK_BLE_MOD_IND_1_00 = 3,
-    SX128X_GFSK_BLE_MOD_IND_1_25 = 4,
-    SX128X_GFSK_BLE_MOD_IND_1_50 = 5,
-    SX128X_GFSK_BLE_MOD_IND_1_75 = 6,
-    SX128X_GFSK_BLE_MOD_IND_2_00 = 7,
-    SX128X_GFSK_BLE_MOD_IND_2_25 = 8,
-    SX128X_GFSK_BLE_MOD_IND_2_50 = 9,
-    SX128X_GFSK_BLE_MOD_IND_2_75 = 10,
-    SX128X_GFSK_BLE_MOD_IND_3_00 = 11,
-    SX128X_GFSK_BLE_MOD_IND_3_25 = 12,
-    SX128X_GFSK_BLE_MOD_IND_3_50 = 13,
-    SX128X_GFSK_BLE_MOD_IND_3_75 = 14,
-    SX128X_GFSK_BLE_MOD_IND_4_00 = 15,
-} sx128x_gfsk_ble_mod_ind_t;
+    typedef enum sx128x_gfsk_ble_mod_ind_s
+    {
+        SX128X_GFSK_BLE_MOD_IND_0_35 = 0,
+        SX128X_GFSK_BLE_MOD_IND_0_50 = 1,
+        SX128X_GFSK_BLE_MOD_IND_0_75 = 2,
+        SX128X_GFSK_BLE_MOD_IND_1_00 = 3,
+        SX128X_GFSK_BLE_MOD_IND_1_25 = 4,
+        SX128X_GFSK_BLE_MOD_IND_1_50 = 5,
+        SX128X_GFSK_BLE_MOD_IND_1_75 = 6,
+        SX128X_GFSK_BLE_MOD_IND_2_00 = 7,
+        SX128X_GFSK_BLE_MOD_IND_2_25 = 8,
+        SX128X_GFSK_BLE_MOD_IND_2_50 = 9,
+        SX128X_GFSK_BLE_MOD_IND_2_75 = 10,
+        SX128X_GFSK_BLE_MOD_IND_3_00 = 11,
+        SX128X_GFSK_BLE_MOD_IND_3_25 = 12,
+        SX128X_GFSK_BLE_MOD_IND_3_50 = 13,
+        SX128X_GFSK_BLE_MOD_IND_3_75 = 14,
+        SX128X_GFSK_BLE_MOD_IND_4_00 = 15,
+    } sx128x_gfsk_ble_mod_ind_t;
 
-/**
+    /**
  * @brief Modulation shapings for GFSK, FLRC and BLE packet types
  */
-typedef enum sx128x_gfsk_flrc_ble_pulse_shape_e
-{
-    SX128X_GFSK_FLRC_BLE_PULSE_SHAPE_OFF   = 0x00,
-    SX128X_GFSK_FLRC_BLE_PULSE_SHAPE_BT_1  = 0x10,
-    SX128X_GFSK_FLRC_BLE_PULSE_SHAPE_BT_05 = 0x20,
-} sx128x_gfsk_flrc_ble_pulse_shape_t;
+    typedef enum sx128x_gfsk_flrc_ble_pulse_shape_e
+    {
+        SX128X_GFSK_FLRC_BLE_PULSE_SHAPE_OFF = 0x00,
+        SX128X_GFSK_FLRC_BLE_PULSE_SHAPE_BT_1 = 0x10,
+        SX128X_GFSK_FLRC_BLE_PULSE_SHAPE_BT_05 = 0x20,
+    } sx128x_gfsk_flrc_ble_pulse_shape_t;
 
-/**
+    /**
  * @brief Combinations of bitrate and bandwidth for GFSK packet type
  *
  * @remark The bitrate is expressed in Mb/s and the bandwidth in MHz
  */
-typedef sx128x_gfsk_ble_br_bw_t sx128x_gfsk_br_bw_t;
+    typedef sx128x_gfsk_ble_br_bw_t sx128x_gfsk_br_bw_t;
 
-/**
+    /**
  * @brief Modulation indexes for GFSK packet type
  */
-typedef sx128x_gfsk_ble_mod_ind_t sx128x_gfsk_mod_ind_t;
+    typedef sx128x_gfsk_ble_mod_ind_t sx128x_gfsk_mod_ind_t;
 
-/**
+    /**
  * @brief Modulation shaping for GFSK packet type
  */
-typedef sx128x_gfsk_flrc_ble_pulse_shape_t sx128x_gfsk_pulse_shape_t;
+    typedef sx128x_gfsk_flrc_ble_pulse_shape_t sx128x_gfsk_pulse_shape_t;
 
-/**
+    /**
  * @brief Modulation parameters for GFSK packet type
  */
-typedef struct sx128x_mod_params_gfsk_s
-{
-    sx128x_gfsk_br_bw_t       br_bw;        //!< GFSK bitrate bandwidth configuration
-    sx128x_gfsk_mod_ind_t     mod_ind;      //!< GFSK modulation index configuration
-    sx128x_gfsk_pulse_shape_t pulse_shape;  //!< GFSK pulse shape configuration
-} sx128x_mod_params_gfsk_t;
+    typedef struct sx128x_mod_params_gfsk_s
+    {
+        sx128x_gfsk_br_bw_t br_bw;             //!< GFSK bitrate bandwidth configuration
+        sx128x_gfsk_mod_ind_t mod_ind;         //!< GFSK modulation index configuration
+        sx128x_gfsk_pulse_shape_t pulse_shape; //!< GFSK pulse shape configuration
+    } sx128x_mod_params_gfsk_t;
 
-/**
+    /**
  * @brief Spreading factor values for LoRa and Ranging packet types
  */
-typedef enum sx128x_lora_ranging_sf_e
-{
-    SX128X_LORA_RANGING_SF5  = 0x50,
-    SX128X_LORA_RANGING_SF6  = 0x60,
-    SX128X_LORA_RANGING_SF7  = 0x70,
-    SX128X_LORA_RANGING_SF8  = 0x80,
-    SX128X_LORA_RANGING_SF9  = 0x90,
-    SX128X_LORA_RANGING_SF10 = 0xA0,
-    SX128X_LORA_RANGING_SF11 = 0xB0,
-    SX128X_LORA_RANGING_SF12 = 0xC0,
-} sx128x_lora_ranging_sf_t;
+    typedef enum sx128x_lora_ranging_sf_e
+    {
+        SX128X_LORA_RANGING_SF5 = 0x50,
+        SX128X_LORA_RANGING_SF6 = 0x60,
+        SX128X_LORA_RANGING_SF7 = 0x70,
+        SX128X_LORA_RANGING_SF8 = 0x80,
+        SX128X_LORA_RANGING_SF9 = 0x90,
+        SX128X_LORA_RANGING_SF10 = 0xA0,
+        SX128X_LORA_RANGING_SF11 = 0xB0,
+        SX128X_LORA_RANGING_SF12 = 0xC0,
+    } sx128x_lora_ranging_sf_t;
 
-/**
+    /**
  * @brief Bandwidth values for LoRa and Ranging packet types
  */
-typedef enum sx128x_lora_ranging_bw_e
-{
-    SX128X_LORA_RANGING_BW_200  = 0x34,
-    SX128X_LORA_RANGING_BW_400  = 0x26,
-    SX128X_LORA_RANGING_BW_800  = 0x18,
-    SX128X_LORA_RANGING_BW_1600 = 0x0A,
-} sx128x_lora_ranging_bw_t;
+    typedef enum sx128x_lora_ranging_bw_e
+    {
+        SX128X_LORA_RANGING_BW_200 = 0x34,
+        SX128X_LORA_RANGING_BW_400 = 0x26,
+        SX128X_LORA_RANGING_BW_800 = 0x18,
+        SX128X_LORA_RANGING_BW_1600 = 0x0A,
+    } sx128x_lora_ranging_bw_t;
 
-/**
+    /**
  * @brief Coding rate values for LoRa and Ranging packet types
  */
-typedef enum sx128x_lora_ranging_cr_e
-{
-    SX128X_LORA_RANGING_CR_4_5    = 0x01,
-    SX128X_LORA_RANGING_CR_4_6    = 0x02,
-    SX128X_LORA_RANGING_CR_4_7    = 0x03,
-    SX128X_LORA_RANGING_CR_4_8    = 0x04,
-    SX128X_LORA_RANGING_CR_LI_4_5 = 0x05,
-    SX128X_LORA_RANGING_CR_LI_4_6 = 0x06,
-    SX128X_LORA_RANGING_CR_LI_4_8 = 0x07,
-} sx128x_lora_ranging_cr_t;
+    typedef enum sx128x_lora_ranging_cr_e
+    {
+        SX128X_LORA_RANGING_CR_4_5 = 0x01,
+        SX128X_LORA_RANGING_CR_4_6 = 0x02,
+        SX128X_LORA_RANGING_CR_4_7 = 0x03,
+        SX128X_LORA_RANGING_CR_4_8 = 0x04,
+        SX128X_LORA_RANGING_CR_LI_4_5 = 0x05,
+        SX128X_LORA_RANGING_CR_LI_4_6 = 0x06,
+        SX128X_LORA_RANGING_CR_LI_4_8 = 0x07,
+    } sx128x_lora_ranging_cr_t;
 
-/**
+    /**
  * @brief Spreading factors for LoRa packet types
  */
-typedef sx128x_lora_ranging_sf_t sx128x_lora_sf_t;
+    typedef sx128x_lora_ranging_sf_t sx128x_lora_sf_t;
 
-/**
+    /**
  * @brief Bandwidths for LoRa packet type
  */
-typedef sx128x_lora_ranging_bw_t sx128x_lora_bw_t;
+    typedef sx128x_lora_ranging_bw_t sx128x_lora_bw_t;
 
-/**
+    /**
  * @brief Coding rates for LoRa packet type
  */
-typedef sx128x_lora_ranging_cr_t sx128x_lora_cr_t;
+    typedef sx128x_lora_ranging_cr_t sx128x_lora_cr_t;
 
-/**
+    /**
  * @brief Modulation parameters for LoRa and Ranging packet types
  */
-typedef struct sx128x_mod_params_lora_ranging_s
-{
-    sx128x_lora_sf_t sf;  //!< LoRa spreading factor configuration
-    sx128x_lora_bw_t bw;  //!< LoRa bandwidth configuration
-    sx128x_lora_cr_t cr;  //!< LoRa coding rate configuration
-} sx128x_mod_params_lora_ranging_t;
+    typedef struct sx128x_mod_params_lora_ranging_s
+    {
+        sx128x_lora_sf_t sf; //!< LoRa spreading factor configuration
+        sx128x_lora_bw_t bw; //!< LoRa bandwidth configuration
+        sx128x_lora_cr_t cr; //!< LoRa coding rate configuration
+    } sx128x_mod_params_lora_ranging_t;
 
-/**
+    /**
  * @brief Modulation parameters for LoRa packet type
  */
-typedef sx128x_mod_params_lora_ranging_t sx128x_mod_params_lora_t;
+    typedef sx128x_mod_params_lora_ranging_t sx128x_mod_params_lora_t;
 
-/**
+    /**
  * @brief Spreading factors for Ranging packet types
  */
-typedef sx128x_lora_ranging_sf_t sx128x_ranging_sf_t;
+    typedef sx128x_lora_ranging_sf_t sx128x_ranging_sf_t;
 
-/**
+    /**
  * @brief Bandwidths for Ranging packet type
  */
-typedef sx128x_lora_ranging_bw_t sx128x_ranging_bw_t;
+    typedef sx128x_lora_ranging_bw_t sx128x_ranging_bw_t;
 
-/**
+    /**
  * @brief Coding rates for Ranging packet type
  */
-typedef sx128x_lora_ranging_cr_t sx128x_ranging_cr_t;
+    typedef sx128x_lora_ranging_cr_t sx128x_ranging_cr_t;
 
-/**
+    /**
  * @brief Modulation parameters for Ranging packet type
  */
-typedef sx128x_mod_params_lora_ranging_t sx128x_mod_params_ranging_t;
+    typedef sx128x_mod_params_lora_ranging_t sx128x_mod_params_ranging_t;
 
-/**
+    /**
  * @brief Number of Ranging address bits checked
  */
-typedef enum sx128x_ranging_address_len_e
-{
-    SX128X_RANGING_ADDRESS_LEN_8  = 0x00,
-    SX128X_RANGING_ADDRESS_LEN_16 = 0x01,
-    SX128X_RANGING_ADDRESS_LEN_24 = 0x02,
-    SX128X_RANGING_ADDRESS_LEN_32 = 0x03,
-} sx128x_ranging_address_len_t;
+    typedef enum sx128x_ranging_address_len_e
+    {
+        SX128X_RANGING_ADDRESS_LEN_8 = 0x00,
+        SX128X_RANGING_ADDRESS_LEN_16 = 0x01,
+        SX128X_RANGING_ADDRESS_LEN_24 = 0x02,
+        SX128X_RANGING_ADDRESS_LEN_32 = 0x03,
+    } sx128x_ranging_address_len_t;
 
-/**
+    /**
  * @brief Ranging result type
  */
-typedef enum sx128x_ranging_result_type_e
-{
-    SX128X_RANGING_RESULT_TYPE_RAW      = 0x00,
-    SX128X_RANGING_RESULT_TYPE_FILTERED = 0x01,
-} sx128x_ranging_result_type_t;
+    typedef enum sx128x_ranging_result_type_e
+    {
+        SX128X_RANGING_RESULT_TYPE_RAW = 0x00,
+        SX128X_RANGING_RESULT_TYPE_FILTERED = 0x01,
+    } sx128x_ranging_result_type_t;
 
-/**
+    /**
  * @brief Combinations of bitrate and bandwidth for FLRC packet type
  *
  * @remark The bitrate is in Mb/s and the bandwidth in MHz
  */
-typedef enum sx128x_flrc_br_bw_e
-{
-    SX128X_FLRC_BR_1_300_BW_1_2 = 0x45,
-    SX128X_FLRC_BR_1_040_BW_1_2 = 0x69,
-    SX128X_FLRC_BR_0_650_BW_0_6 = 0x86,
-    SX128X_FLRC_BR_0_520_BW_0_6 = 0xAA,
-    SX128X_FLRC_BR_0_325_BW_0_3 = 0xC7,
-    SX128X_FLRC_BR_0_260_BW_0_3 = 0xEB,
-} sx128x_flrc_br_bw_t;
+    typedef enum sx128x_flrc_br_bw_e
+    {
+        SX128X_FLRC_BR_1_300_BW_1_2 = 0x45,
+        SX128X_FLRC_BR_1_040_BW_1_2 = 0x69,
+        SX128X_FLRC_BR_0_650_BW_0_6 = 0x86,
+        SX128X_FLRC_BR_0_520_BW_0_6 = 0xAA,
+        SX128X_FLRC_BR_0_325_BW_0_3 = 0xC7,
+        SX128X_FLRC_BR_0_260_BW_0_3 = 0xEB,
+    } sx128x_flrc_br_bw_t;
 
-/**
+    /**
  * @brief Coding rates for FLRC packet type
  */
-typedef enum sx128x_flrc_cr_e
-{
-    SX128X_FLRC_CR_1_2 = 0x00,
-    SX128X_FLRC_CR_3_4 = 0x02,
-    SX128X_FLRC_CR_1_1 = 0x04,
-} sx128x_flrc_cr_t;
+    typedef enum sx128x_flrc_cr_e
+    {
+        SX128X_FLRC_CR_1_2 = 0x00,
+        SX128X_FLRC_CR_3_4 = 0x02,
+        SX128X_FLRC_CR_1_1 = 0x04,
+    } sx128x_flrc_cr_t;
 
-/**
+    /**
  * @brief Modulation shapings for FLRC packet types
  */
-typedef sx128x_gfsk_flrc_ble_pulse_shape_t sx128x_flrc_pulse_shape_t;
+    typedef sx128x_gfsk_flrc_ble_pulse_shape_t sx128x_flrc_pulse_shape_t;
 
-/**
+    /**
  * @brief Modulation parameters for FLRC packet type
  */
-typedef struct sx128x_mod_params_flrc_s
-{
-    sx128x_flrc_br_bw_t       br_bw;        //!< FLRC bitrate bandwidth configuration
-    sx128x_flrc_cr_t          cr;           //!< FLCR coding rate configuration
-    sx128x_flrc_pulse_shape_t pulse_shape;  //!< FLRC pulse shape configuration
-} sx128x_mod_params_flrc_t;
+    typedef struct sx128x_mod_params_flrc_s
+    {
+        sx128x_flrc_br_bw_t br_bw;             //!< FLRC bitrate bandwidth configuration
+        sx128x_flrc_cr_t cr;                   //!< FLCR coding rate configuration
+        sx128x_flrc_pulse_shape_t pulse_shape; //!< FLRC pulse shape configuration
+    } sx128x_mod_params_flrc_t;
 
-/**
+    /**
  * @brief Combinations of bitrate and bandwidth for BLE packet types
  *
  * @remark The bitrate is expressed in Mb/s and the bandwidth in MHz
  */
-typedef sx128x_gfsk_ble_br_bw_t sx128x_ble_br_bw_t;
+    typedef sx128x_gfsk_ble_br_bw_t sx128x_ble_br_bw_t;
 
-/**
+    /**
  * @brief Modulation indexes for BLE packet types
  */
-typedef sx128x_gfsk_ble_mod_ind_t sx128x_ble_mod_ind_t;
+    typedef sx128x_gfsk_ble_mod_ind_t sx128x_ble_mod_ind_t;
 
-/**
+    /**
  * @brief Modulation shapings for BLE packet types
  */
-typedef sx128x_gfsk_flrc_ble_pulse_shape_t sx128x_ble_pulse_shape_t;
+    typedef sx128x_gfsk_flrc_ble_pulse_shape_t sx128x_ble_pulse_shape_t;
 
-/**
+    /**
  * @brief Modulation parameters for BLE packet type
  */
-typedef struct sx128x_mod_params_ble_s
-{
-    sx128x_ble_br_bw_t       br_bw;        //!< BLE bitrate and bandwidth configuration
-    sx128x_ble_mod_ind_t     mod_ind;      //!< BLE Modulation index configuration
-    sx128x_ble_pulse_shape_t pulse_shape;  //!< BLE Pulse shape configuration
-} sx128x_mod_params_ble_t;
+    typedef struct sx128x_mod_params_ble_s
+    {
+        sx128x_ble_br_bw_t br_bw;             //!< BLE bitrate and bandwidth configuration
+        sx128x_ble_mod_ind_t mod_ind;         //!< BLE Modulation index configuration
+        sx128x_ble_pulse_shape_t pulse_shape; //!< BLE Pulse shape configuration
+    } sx128x_mod_params_ble_t;
 
-/**
+    /**
  * @brief Preamble lengths for GFSK and FLRC packet types
  */
-typedef enum sx128x_gfsk_flrc_preamble_len_e
-{
-    SX128X_GFSK_FLRC_PREAMBLE_LEN_04_BITS = 0x00,
-    SX128X_GFSK_FLRC_PREAMBLE_LEN_08_BITS = 0x10,
-    SX128X_GFSK_FLRC_PREAMBLE_LEN_12_BITS = 0x20,
-    SX128X_GFSK_FLRC_PREAMBLE_LEN_16_BITS = 0x30,
-    SX128X_GFSK_FLRC_PREAMBLE_LEN_20_BITS = 0x40,
-    SX128X_GFSK_FLRC_PREAMBLE_LEN_24_BITS = 0x50,
-    SX128X_GFSK_FLRC_PREAMBLE_LEN_28_BITS = 0x60,
-    SX128X_GFSK_FLRC_PREAMBLE_LEN_32_BITS = 0x70,
-} sx128x_gfsk_flrc_preamble_len_t;
+    typedef enum sx128x_gfsk_flrc_preamble_len_e
+    {
+        SX128X_GFSK_FLRC_PREAMBLE_LEN_04_BITS = 0x00,
+        SX128X_GFSK_FLRC_PREAMBLE_LEN_08_BITS = 0x10,
+        SX128X_GFSK_FLRC_PREAMBLE_LEN_12_BITS = 0x20,
+        SX128X_GFSK_FLRC_PREAMBLE_LEN_16_BITS = 0x30,
+        SX128X_GFSK_FLRC_PREAMBLE_LEN_20_BITS = 0x40,
+        SX128X_GFSK_FLRC_PREAMBLE_LEN_24_BITS = 0x50,
+        SX128X_GFSK_FLRC_PREAMBLE_LEN_28_BITS = 0x60,
+        SX128X_GFSK_FLRC_PREAMBLE_LEN_32_BITS = 0x70,
+    } sx128x_gfsk_flrc_preamble_len_t;
 
-/**
+    /**
  * @brief SyncWord lengths for GFSK packet type
  */
-typedef enum sx128x_gfsk_sync_word_len_e
-{
-    SX128X_GFSK_SYNC_WORD_LEN_1_BYTE = 0x00,
-    SX128X_GFSK_SYNC_WORD_LEN_2_BYTE = 0x02,
-    SX128X_GFSK_SYNC_WORD_LEN_3_BYTE = 0x04,
-    SX128X_GFSK_SYNC_WORD_LEN_4_BYTE = 0x06,
-    SX128X_GFSK_SYNC_WORD_LEN_5_BYTE = 0x08,
-} sx128x_gfsk_sync_word_len_t;
+    typedef enum sx128x_gfsk_sync_word_len_e
+    {
+        SX128X_GFSK_SYNC_WORD_LEN_1_BYTE = 0x00,
+        SX128X_GFSK_SYNC_WORD_LEN_2_BYTE = 0x02,
+        SX128X_GFSK_SYNC_WORD_LEN_3_BYTE = 0x04,
+        SX128X_GFSK_SYNC_WORD_LEN_4_BYTE = 0x06,
+        SX128X_GFSK_SYNC_WORD_LEN_5_BYTE = 0x08,
+    } sx128x_gfsk_sync_word_len_t;
 
-/**
+    /**
  * @brief Combinations of SyncWord correlators activated for GFSK and FLRC packet
  * types
  */
-typedef enum sx128x_gfsk_flrc_rx_match_sync_word_e
-{
-    SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_OFF   = 0x00,
-    SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_1     = 0x10,
-    SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_2     = 0x20,
-    SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_1_2   = 0x30,
-    SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_3     = 0x40,
-    SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_1_3   = 0x50,
-    SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_2_3   = 0x60,
-    SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_1_2_3 = 0x70,
-} sx128x_gfsk_flrc_rx_match_sync_word_t;
+    typedef enum sx128x_gfsk_flrc_rx_match_sync_word_e
+    {
+        SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_OFF = 0x00,
+        SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_1 = 0x10,
+        SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_2 = 0x20,
+        SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_1_2 = 0x30,
+        SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_3 = 0x40,
+        SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_1_3 = 0x50,
+        SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_2_3 = 0x60,
+        SX128X_GFSK_FLRC_RX_MATCH_SYNCWORD_1_2_3 = 0x70,
+    } sx128x_gfsk_flrc_rx_match_sync_word_t;
 
-/**
+    /**
  * @brief Packet length mode for GFSK and FLRC packet types
  */
-typedef enum sx128x_gfsk_flrc_pkt_len_modes_e
-{
-    SX128X_GFSK_FLRC_PKT_FIX_LEN = 0x00,
-    SX128X_GFSK_FLRC_PKT_VAR_LEN = 0x20,
-} sx128x_gfsk_flrc_pkt_len_modes_t;
+    typedef enum sx128x_gfsk_flrc_pkt_len_modes_e
+    {
+        SX128X_GFSK_FLRC_PKT_FIX_LEN = 0x00,
+        SX128X_GFSK_FLRC_PKT_VAR_LEN = 0x20,
+    } sx128x_gfsk_flrc_pkt_len_modes_t;
 
-/**
+    /**
  * @brief CRC lengths for GFSK packet types
  *
  * @remark Not all configurations are available for both GFSK and FLRC packet types. Please refer to the datasheet for
  * possible configuration.
  */
-typedef enum sx128x_gfsk_crc_types_e
-{
-    SX128X_GFSK_CRC_OFF     = 0x00,
-    SX128X_GFSK_CRC_1_BYTES = 0x10,
-    SX128X_GFSK_CRC_2_BYTES = 0x20,
-    SX128X_GFSK_CRC_3_BYTES = 0x30,
-} sx128x_gfsk_crc_types_t;
+    typedef enum sx128x_gfsk_crc_types_e
+    {
+        SX128X_GFSK_CRC_OFF = 0x00,
+        SX128X_GFSK_CRC_1_BYTES = 0x10,
+        SX128X_GFSK_CRC_2_BYTES = 0x20,
+        SX128X_GFSK_CRC_3_BYTES = 0x30,
+    } sx128x_gfsk_crc_types_t;
 
-/**
+    /**
  * @brief Whitening modes for GFSK, FLRC and BLE packet types
  */
-typedef enum sx128x_gfsk_flrc_ble_dc_free_e
-{
-    SX128X_GFSK_FLRC_BLE_DC_FREE_OFF = 0x08,
-    SX128X_GFSK_FLRC_BLE_DC_FREE_ON  = 0x00,
-} sx128x_gfsk_flrc_ble_dc_free_t;
+    typedef enum sx128x_gfsk_flrc_ble_dc_free_e
+    {
+        SX128X_GFSK_FLRC_BLE_DC_FREE_OFF = 0x08,
+        SX128X_GFSK_FLRC_BLE_DC_FREE_ON = 0x00,
+    } sx128x_gfsk_flrc_ble_dc_free_t;
 
-/**
+    /**
  * @brief Preamble lengths for GFS packet type
  */
-typedef sx128x_gfsk_flrc_preamble_len_t sx128x_gfsk_preamble_len_t;
+    typedef sx128x_gfsk_flrc_preamble_len_t sx128x_gfsk_preamble_len_t;
 
-/**
+    /**
  * @brief Combinations of SyncWord correlators activated for GFSK packet type
  */
-typedef sx128x_gfsk_flrc_rx_match_sync_word_t sx128x_gfsk_rx_match_sync_word_t;
+    typedef sx128x_gfsk_flrc_rx_match_sync_word_t sx128x_gfsk_rx_match_sync_word_t;
 
-/**
+    /**
  * @brief Packet length mode for GFSK packet type
  */
-typedef sx128x_gfsk_flrc_pkt_len_modes_t sx128x_gfsk_pkt_len_modes_t;
+    typedef sx128x_gfsk_flrc_pkt_len_modes_t sx128x_gfsk_pkt_len_modes_t;
 
-/**
+    /**
  * @brief Packet parameters for GFSK modulation
  */
-typedef struct sx128x_pkt_params_gfsk_s
-{
-    sx128x_gfsk_preamble_len_t       preamble_len;      //!< GFSK preamble length configuration
-    sx128x_gfsk_sync_word_len_t      sync_word_len;     //!< GFSK syncword length configuration
-    sx128x_gfsk_rx_match_sync_word_t match_sync_word;   //!< GFSK syncword matcher configuration
-    sx128x_gfsk_pkt_len_modes_t      header_type;       //!< GFSK header type configuration
-    uint8_t                          pld_len_in_bytes;  //!< GFSK payload length in byte configuration
-    sx128x_gfsk_crc_types_t          crc_type;          //!< GFSK CRC type configuration
-    sx128x_gfsk_flrc_ble_dc_free_t   dc_free;           //!< GFSK whitening configuration
-} sx128x_pkt_params_gfsk_t;
+    typedef struct sx128x_pkt_params_gfsk_s
+    {
+        sx128x_gfsk_preamble_len_t preamble_len;          //!< GFSK preamble length configuration
+        sx128x_gfsk_sync_word_len_t sync_word_len;        //!< GFSK syncword length configuration
+        sx128x_gfsk_rx_match_sync_word_t match_sync_word; //!< GFSK syncword matcher configuration
+        sx128x_gfsk_pkt_len_modes_t header_type;          //!< GFSK header type configuration
+        uint8_t pld_len_in_bytes;                         //!< GFSK payload length in byte configuration
+        sx128x_gfsk_crc_types_t crc_type;                 //!< GFSK CRC type configuration
+        sx128x_gfsk_flrc_ble_dc_free_t dc_free;           //!< GFSK whitening configuration
+    } sx128x_pkt_params_gfsk_t;
 
-/**
+    /**
  * @brief Packet lengths for LoRa and Ranging packet types
  */
-typedef enum sx128x_lora_ranging_pkt_len_modes_e
-{
-    SX128X_LORA_RANGING_PKT_EXPLICIT = 0x00,
-    SX128X_LORA_RANGING_PKT_IMPLICIT = 0x80,
-} sx128x_lora_ranging_pkt_len_modes_t;
+    typedef enum sx128x_lora_ranging_pkt_len_modes_e
+    {
+        SX128X_LORA_RANGING_PKT_EXPLICIT = 0x00,
+        SX128X_LORA_RANGING_PKT_IMPLICIT = 0x80,
+    } sx128x_lora_ranging_pkt_len_modes_t;
 
-/**
+    /**
  * @brief Packet lengths for LoRa packet type
  */
-typedef sx128x_lora_ranging_pkt_len_modes_t sx128x_lora_pkt_len_modes_t;
+    typedef sx128x_lora_ranging_pkt_len_modes_t sx128x_lora_pkt_len_modes_t;
 
-/**
+    /**
  * @brief Preamble length for LoRa and Ranging packet types
  *
  * It is defined with a mantissa part and and an exponential part. So that the length of the preamble is defined by:
  *
  * \f$ preamble\_length = mant * 2 ^ {exp} \f$
  */
-typedef struct sx128x_lora_ranging_preamble_len_s
-{
-    uint8_t mant;  //!< Mantissa part of the preamble length definition
-    uint8_t exp;   //!< Exponenential part of the preamble length definition
-} sx128x_lora_ranging_preamble_len_t;
+    typedef struct sx128x_lora_ranging_preamble_len_s
+    {
+        uint8_t mant; //!< Mantissa part of the preamble length definition
+        uint8_t exp;  //!< Exponenential part of the preamble length definition
+    } sx128x_lora_ranging_preamble_len_t;
 
-/**
+    /**
  * @brief Preamble length for LoRa packet type
  */
-typedef sx128x_lora_ranging_preamble_len_t sx128x_lora_preamble_len_t;
+    typedef sx128x_lora_ranging_preamble_len_t sx128x_lora_preamble_len_t;
 
-/**
+    /**
  * @brief Packet parameters for LoRa and Ranging packet types
  */
-typedef struct sx128x_pkt_params_lora_ranging_s
-{
-    sx128x_lora_preamble_len_t  preamble_len;      //!< LoRa preamble length configuration
-    sx128x_lora_pkt_len_modes_t header_type;       //!< LoRa header type configuration
-    uint8_t                     pld_len_in_bytes;  //!< LoRa payload length in byte configuration
-    bool                        crc_is_on;         //!< LoRa CRC configuration
-    bool                        invert_iq_is_on;   //!< LoRa IQ swapping configuration
-} sx128x_pkt_params_lora_ranging_t;
+    typedef struct sx128x_pkt_params_lora_ranging_s
+    {
+        sx128x_lora_preamble_len_t preamble_len; //!< LoRa preamble length configuration
+        sx128x_lora_pkt_len_modes_t header_type; //!< LoRa header type configuration
+        uint8_t pld_len_in_bytes;                //!< LoRa payload length in byte configuration
+        bool crc_is_on;                          //!< LoRa CRC configuration
+        bool invert_iq_is_on;                    //!< LoRa IQ swapping configuration
+    } sx128x_pkt_params_lora_ranging_t;
 
-/**
+    /**
  * @brief Packet parameters for LoRa packet type
  */
-typedef sx128x_pkt_params_lora_ranging_t sx128x_pkt_params_lora_t;
+    typedef sx128x_pkt_params_lora_ranging_t sx128x_pkt_params_lora_t;
 
-/**
+    /**
  * @brief Packet lengths for Ranging packet type
  */
-typedef sx128x_lora_ranging_pkt_len_modes_t sx128x_ranging_pkt_len_modes_t;
+    typedef sx128x_lora_ranging_pkt_len_modes_t sx128x_ranging_pkt_len_modes_t;
 
-/**
+    /**
  * @brief Preamble length for Ranging packet type
  */
-typedef sx128x_lora_ranging_preamble_len_t sx128x_ranging_preamble_len_t;
+    typedef sx128x_lora_ranging_preamble_len_t sx128x_ranging_preamble_len_t;
 
-/**
+    /**
  * @brief Packet parameters for Ranging packet type
  */
-typedef sx128x_pkt_params_lora_ranging_t sx128x_pkt_params_ranging_t;
+    typedef sx128x_pkt_params_lora_ranging_t sx128x_pkt_params_ranging_t;
 
-/**
+    /**
  * @brief Preamble length values for FLRC packet type
  */
-typedef sx128x_gfsk_flrc_preamble_len_t sx128x_flrc_preamble_len_t;
+    typedef sx128x_gfsk_flrc_preamble_len_t sx128x_flrc_preamble_len_t;
 
-/**
+    /**
  * @brief SyncWord lengths for FLRC packet type
  */
-typedef enum sx128x_flrc_sync_word_len_e
-{
-    SX128X_FLRC_SYNC_WORD_OFF = 0x00,
-    SX128X_FLRC_SYNC_WORD_ON  = 0x04,
-} sx128x_flrc_sync_word_len_t;
+    typedef enum sx128x_flrc_sync_word_len_e
+    {
+        SX128X_FLRC_SYNC_WORD_OFF = 0x00,
+        SX128X_FLRC_SYNC_WORD_ON = 0x04,
+    } sx128x_flrc_sync_word_len_t;
 
-/**
+    /**
  * @brief Combinations of SyncWord correlators activated for FLRC packet type
  */
-typedef sx128x_gfsk_flrc_rx_match_sync_word_t sx128x_flrc_rx_match_sync_word_t;
+    typedef sx128x_gfsk_flrc_rx_match_sync_word_t sx128x_flrc_rx_match_sync_word_t;
 
-/**
+    /**
  * @brief Packet lengths for FLRC packet type
  */
-typedef sx128x_gfsk_flrc_pkt_len_modes_t sx128x_flrc_pkt_len_modes_t;
+    typedef sx128x_gfsk_flrc_pkt_len_modes_t sx128x_flrc_pkt_len_modes_t;
 
-/**
+    /**
  * @brief CRC lengths for FLRC packet types
  *
  * @remark Not all configurations are available for both GFSK and FLRC packet types. Please refer to the datasheet for
  * possible configuration.
  */
-typedef enum sx128x_flrc_crc_types_e
-{
-    SX128X_FLRC_CRC_OFF     = 0x00,
-    SX128X_FLRC_CRC_2_BYTES = 0x10,
-    SX128X_FLRC_CRC_3_BYTES = 0x20,
-    SX128X_FLRC_CRC_4_BYTES = 0x30,
-} sx128x_flrc_crc_types_t;
+    typedef enum sx128x_flrc_crc_types_e
+    {
+        SX128X_FLRC_CRC_OFF = 0x00,
+        SX128X_FLRC_CRC_2_BYTES = 0x10,
+        SX128X_FLRC_CRC_3_BYTES = 0x20,
+        SX128X_FLRC_CRC_4_BYTES = 0x30,
+    } sx128x_flrc_crc_types_t;
 
-/**
+    /**
  * @brief Packet parameters for FLRC packet type
  */
-typedef struct sx128x_pkt_params_flrc_s
-{
-    sx128x_flrc_preamble_len_t       preamble_len;      //!< FLRC preamble length configuration
-    sx128x_flrc_sync_word_len_t      sync_word_len;     //!< FLRC syncword length configuration
-    sx128x_flrc_rx_match_sync_word_t match_sync_word;   //!< FLRC syncword matcher configuration
-    sx128x_flrc_pkt_len_modes_t      header_type;       //!< FLRC header type configuration
-    uint8_t                          pld_len_in_bytes;  //!< FLRC payload length in byte configuration
-    sx128x_flrc_crc_types_t          crc_type;          //!< FLRC CRC type configuration
-} sx128x_pkt_params_flrc_t;
+    typedef struct sx128x_pkt_params_flrc_s
+    {
+        sx128x_flrc_preamble_len_t preamble_len;          //!< FLRC preamble length configuration
+        sx128x_flrc_sync_word_len_t sync_word_len;        //!< FLRC syncword length configuration
+        sx128x_flrc_rx_match_sync_word_t match_sync_word; //!< FLRC syncword matcher configuration
+        sx128x_flrc_pkt_len_modes_t header_type;          //!< FLRC header type configuration
+        uint8_t pld_len_in_bytes;                         //!< FLRC payload length in byte configuration
+        sx128x_flrc_crc_types_t crc_type;                 //!< FLRC CRC type configuration
+    } sx128x_pkt_params_flrc_t;
 
-/**
+    /**
  * @brief Connection states for BLE packet type
  */
-typedef enum sx128x_ble_con_states_e
-{
-    SX128X_BLE_PLD_LEN_MAX_31_BYTES  = 0x00,
-    SX128X_BLE_PLD_LEN_MAX_37_BYTES  = 0x20,
-    SX128X_BLE_TX_TEST_MODE          = 0x40,
-    SX128X_BLE_RX_TEST_MODE          = 0x60,
-    SX128X_BLE_PLD_LEN_MAX_255_BYTES = 0x80,
-} sx128x_ble_con_states_t;
+    typedef enum sx128x_ble_con_states_e
+    {
+        SX128X_BLE_PLD_LEN_MAX_31_BYTES = 0x00,
+        SX128X_BLE_PLD_LEN_MAX_37_BYTES = 0x20,
+        SX128X_BLE_TX_TEST_MODE = 0x40,
+        SX128X_BLE_RX_TEST_MODE = 0x60,
+        SX128X_BLE_PLD_LEN_MAX_255_BYTES = 0x80,
+    } sx128x_ble_con_states_t;
 
-/**
+    /**
  * @brief CRC lengths for BLE packet type
  */
-typedef enum sx128x_ble_crc_type_e
-{
-    SX128X_BLE_CRC_OFF = 0x00,
-    SX128X_BLE_CRC_3B  = 0x10,
-} sx128x_ble_crc_type_t;
+    typedef enum sx128x_ble_crc_type_e
+    {
+        SX128X_BLE_CRC_OFF = 0x00,
+        SX128X_BLE_CRC_3B = 0x10,
+    } sx128x_ble_crc_type_t;
 
-/**
+    /**
  * @brief BLE packet types for BLE packet type
  */
-typedef enum sx128x_ble_pkt_types_e
-{
-    SX128X_BLE_PKT_TYPE_PRBS_9       = 0x00,  //!< Pseudo Random Binary Sequence based on 9th degree polynomial
-    SX128X_BLE_PKT_TYPE_PRBS_15      = 0x0C,  //!< Pseudo Random Binary Sequence based on 15th degree polynomial
-    SX128X_BLE_PKT_TYPE_EYELONG_1_0  = 0x04,  //!< Repeated '11110000' sequence
-    SX128X_BLE_PKT_TYPE_EYELONG_0_1  = 0x18,  //!< Repeated '00001111' sequence
-    SX128X_BLE_PKT_TYPE_EYESHORT_1_0 = 0x08,  //!< Repeated '10101010' sequence
-    SX128X_BLE_PKT_TYPE_EYESHORT_0_1 = 0x1C,  //!< Repeated '01010101' sequence
-    SX128X_BLE_PKT_TYPE_ALL_1        = 0x10,  //!< Repeated '11111111' sequence
-    SX128X_BLE_PKT_TYPE_ALL_0        = 0x14,  //!< Repeated '00000000' sequence
-} sx128x_ble_pkt_type_t;
+    typedef enum sx128x_ble_pkt_types_e
+    {
+        SX128X_BLE_PKT_TYPE_PRBS_9 = 0x00,       //!< Pseudo Random Binary Sequence based on 9th degree polynomial
+        SX128X_BLE_PKT_TYPE_PRBS_15 = 0x0C,      //!< Pseudo Random Binary Sequence based on 15th degree polynomial
+        SX128X_BLE_PKT_TYPE_EYELONG_1_0 = 0x04,  //!< Repeated '11110000' sequence
+        SX128X_BLE_PKT_TYPE_EYELONG_0_1 = 0x18,  //!< Repeated '00001111' sequence
+        SX128X_BLE_PKT_TYPE_EYESHORT_1_0 = 0x08, //!< Repeated '10101010' sequence
+        SX128X_BLE_PKT_TYPE_EYESHORT_0_1 = 0x1C, //!< Repeated '01010101' sequence
+        SX128X_BLE_PKT_TYPE_ALL_1 = 0x10,        //!< Repeated '11111111' sequence
+        SX128X_BLE_PKT_TYPE_ALL_0 = 0x14,        //!< Repeated '00000000' sequence
+    } sx128x_ble_pkt_type_t;
 
-/**
+    /**
  * @brief Whitening modes for BLE packet type
  */
-typedef sx128x_gfsk_flrc_ble_dc_free_t sx128x_ble_dc_free_t;
+    typedef sx128x_gfsk_flrc_ble_dc_free_t sx128x_ble_dc_free_t;
 
-/**
+    /**
  * @brief Packet parameters for BLE packet type
  */
-typedef struct sx128x_pkt_params_ble_s
-{
-    sx128x_ble_con_states_t con_state;  //!< BLE connection state configuration
-    sx128x_ble_crc_type_t   crc_type;   //!< BLE CRC configuration
-    sx128x_ble_pkt_type_t   pkt_type;   //!< BLE test packet payload to use when con_state == SX128X_BLE_TX_TEST_MODE
-    sx128x_ble_dc_free_t    dc_free;    //!< BLE whitening configuration
-} sx128x_pkt_params_ble_t;
+    typedef struct sx128x_pkt_params_ble_s
+    {
+        sx128x_ble_con_states_t con_state; //!< BLE connection state configuration
+        sx128x_ble_crc_type_t crc_type;    //!< BLE CRC configuration
+        sx128x_ble_pkt_type_t pkt_type;    //!< BLE test packet payload to use when con_state == SX128X_BLE_TX_TEST_MODE
+        sx128x_ble_dc_free_t dc_free;      //!< BLE whitening configuration
+    } sx128x_pkt_params_ble_t;
 
-/**
+    /**
  * @brief CAD number of symbols
  */
-typedef enum sx128x_lora_cad_symbs_e
-{
-    SX128X_LORA_CAD_01_SYMB = 0x00,
-    SX128X_LORA_CAD_02_SYMB = 0x20,
-    SX128X_LORA_CAD_04_SYMB = 0x40,
-    SX128X_LORA_CAD_08_SYMB = 0x60,
-    SX128X_LORA_CAD_16_SYMB = 0x80,
-} sx128x_lora_cad_symbs_t;
+    typedef enum sx128x_lora_cad_symbs_e
+    {
+        SX128X_LORA_CAD_01_SYMB = 0x00,
+        SX128X_LORA_CAD_02_SYMB = 0x20,
+        SX128X_LORA_CAD_04_SYMB = 0x40,
+        SX128X_LORA_CAD_08_SYMB = 0x60,
+        SX128X_LORA_CAD_16_SYMB = 0x80,
+    } sx128x_lora_cad_symbs_t;
 
-/**
+    /**
  * @brief CAD parameters.
  */
-typedef struct sx128x_lora_cad_param_s
-{
-    sx128x_lora_cad_symbs_t cad_symb_nb;  //!< Configuration of the number of LoRa symbols for CAD operation
-} sx128x_lora_cad_params_t;
+    typedef struct sx128x_lora_cad_param_s
+    {
+        sx128x_lora_cad_symbs_t cad_symb_nb; //!< Configuration of the number of LoRa symbols for CAD operation
+    } sx128x_lora_cad_params_t;
 
-/**
+    /**
  * @brief Chip mode status
  */
-typedef enum sx128x_chip_modes_e
-{
-    SX128X_CHIP_MODE_STBY_RC   = 2,
-    SX128X_CHIP_MODE_STBY_XOSC = 3,
-    SX128X_CHIP_MODE_FS        = 4,
-    SX128X_CHIP_MODE_RX        = 5,
-    SX128X_CHIP_MODE_TX        = 6,
-} sx128x_chip_modes_t;
+    typedef enum sx128x_chip_modes_e
+    {
+        SX128X_CHIP_MODE_STBY_RC = 2,
+        SX128X_CHIP_MODE_STBY_XOSC = 3,
+        SX128X_CHIP_MODE_FS = 4,
+        SX128X_CHIP_MODE_RX = 5,
+        SX128X_CHIP_MODE_TX = 6,
+    } sx128x_chip_modes_t;
 
-/**
+    /**
  * @brief Chip command status
  */
-typedef enum sx128x_cmd_status_e
-{
-    SX128X_CMD_STATUS_CMD_OK            = 1,
-    SX128X_CMD_STATUS_DATA_AVAILABLE    = 2,
-    SX128X_CMD_STATUS_CMD_TIMEOUT       = 3,
-    SX128X_CMD_STATUS_CMD_PROCESS_ERROR = 4,
-    SX128X_CMD_STATUS_CMD_EXEC_FAILURE  = 5,
-    SX128X_CMD_STATUS_CMD_TX_DONE       = 6,
-} sx128x_cmd_status_t;
+    typedef enum sx128x_cmd_status_e
+    {
+        SX128X_CMD_STATUS_CMD_OK = 1,
+        SX128X_CMD_STATUS_DATA_AVAILABLE = 2,
+        SX128X_CMD_STATUS_CMD_TIMEOUT = 3,
+        SX128X_CMD_STATUS_CMD_PROCESS_ERROR = 4,
+        SX128X_CMD_STATUS_CMD_EXEC_FAILURE = 5,
+        SX128X_CMD_STATUS_CMD_TX_DONE = 6,
+    } sx128x_cmd_status_t;
 
-/**
+    /**
  * @brief Chip status parameters
  */
-typedef struct sx128x_chip_status_s
-{
-    sx128x_cmd_status_t cmd_status;  //!< Status of the last command
-    sx128x_chip_modes_t chip_mode;   //!< Current mode of the chip
-} sx128x_chip_status_t;
+    typedef struct sx128x_chip_status_s
+    {
+        sx128x_cmd_status_t cmd_status; //!< Status of the last command
+        sx128x_chip_modes_t chip_mode;  //!< Current mode of the chip
+    } sx128x_chip_status_t;
 
-/**
+    /**
  * @brief Rx buffer status parameters for GFSK, LoRa, FLRC and BLE packet types
  */
-typedef struct sx128x_rx_buffer_status_s
-{
-    uint8_t pld_len_in_bytes;      //!< Received payload buffer length in bytes
-    uint8_t buffer_start_pointer;  //!< Received payload buffer offset
-} sx128x_rx_buffer_status_t;
+    typedef struct sx128x_rx_buffer_status_s
+    {
+        uint8_t pld_len_in_bytes;     //!< Received payload buffer length in bytes
+        uint8_t buffer_start_pointer; //!< Received payload buffer offset
+    } sx128x_rx_buffer_status_t;
 
-/**
+    /**
  * @brief Bit mask for packet status error
  */
-enum sx128x_pkt_status_errors_e
-{
-    SX128X_PKT_STATUS_ERROR_PKT_CTRL_BUSY = ( 1 << 0 ),
-    SX128X_PKT_STATUS_ERROR_PKT_RX        = ( 1 << 1 ),
-    SX128X_PKT_STATUS_ERROR_HEADER_RX     = ( 1 << 2 ),
-    SX128X_PKT_STATUS_ERROR_TX_RX_ABORTED = ( 1 << 3 ),
-    SX128X_PKT_STATUS_ERROR_PKT_CRC       = ( 1 << 4 ),
-    SX128X_PKT_STATUS_ERROR_PKT_LEN       = ( 1 << 5 ),
-    SX128X_PKT_STATUS_ERROR_PKT_SYNC      = ( 1 << 6 ),
-};
+    enum sx128x_pkt_status_errors_e
+    {
+        SX128X_PKT_STATUS_ERROR_PKT_CTRL_BUSY = (1 << 0),
+        SX128X_PKT_STATUS_ERROR_PKT_RX = (1 << 1),
+        SX128X_PKT_STATUS_ERROR_HEADER_RX = (1 << 2),
+        SX128X_PKT_STATUS_ERROR_TX_RX_ABORTED = (1 << 3),
+        SX128X_PKT_STATUS_ERROR_PKT_CRC = (1 << 4),
+        SX128X_PKT_STATUS_ERROR_PKT_LEN = (1 << 5),
+        SX128X_PKT_STATUS_ERROR_PKT_SYNC = (1 << 6),
+    };
 
-/**
+    /**
  * @brief Mask for status errors
  *
  * @see sx128x_pkt_status_errors_e
  */
-typedef uint8_t sx128x_pkt_status_errors_t;
+    typedef uint8_t sx128x_pkt_status_errors_t;
 
-/**
+    /**
  * @brief Bit mask for packet status
  */
-enum sx128x_pkt_status_e
-{
-    SX128X_PKT_STATUS_PKT_SENT  = ( 1 << 0 ),
-    SX128X_PKT_STATUS_RX_NO_ACK = ( 1 << 5 ),
-};
+    enum sx128x_pkt_status_e
+    {
+        SX128X_PKT_STATUS_PKT_SENT = (1 << 0),
+        SX128X_PKT_STATUS_RX_NO_ACK = (1 << 5),
+    };
 
-/**
+    /**
  * @brief Mask for packet statuses
  *
  * @see sx128x_pkt_status_e
  */
-typedef uint8_t sx128x_pkt_status_t;
+    typedef uint8_t sx128x_pkt_status_t;
 
-/**
+    /**
  * @brief Bit mask for packet status sync address
  */
-enum sx128x_pkt_status_sync_e
-{
-    SX128X_PKT_STATUS_SYNC_ADDRESS_1 = ( 1 << 0 ),
-    SX128X_PKT_STATUS_SYNC_ADDRESS_2 = ( 1 << 1 ),
-    SX128X_PKT_STATUS_SYNC_ADDRESS_3 = ( 1 << 2 ),
-};
+    enum sx128x_pkt_status_sync_e
+    {
+        SX128X_PKT_STATUS_SYNC_ADDRESS_1 = (1 << 0),
+        SX128X_PKT_STATUS_SYNC_ADDRESS_2 = (1 << 1),
+        SX128X_PKT_STATUS_SYNC_ADDRESS_3 = (1 << 2),
+    };
 
-/**
+    /**
  * @brief Mask for packet status sync addresses
  *
  * @see sx128x_pkt_status_sync_e
  */
-typedef uint8_t sx128x_pkt_status_sync_t;
+    typedef uint8_t sx128x_pkt_status_sync_t;
 
-/**
+    /**
  * @brief Packet status parameters for GFSK, FLRC and BLE packet types
  */
-typedef struct sx128x_pkt_status_gfsk_flrc_ble_s
-{
-    int8_t                     rssi;    //!< FSK/FLRC/BLE packet RSSI (dBm)
-    sx128x_pkt_status_errors_t errors;  //!< FSK/FLRC/BLE packet error bit mask
-    sx128x_pkt_status_t        status;  //!< FSK/FLRC/BLE packet status bit mask
-    sx128x_pkt_status_sync_t   sync;    //!< FSK/FLRC/BLE packet sync bit mask
-} sx128x_pkt_status_gfsk_flrc_ble_t;
+    typedef struct sx128x_pkt_status_gfsk_flrc_ble_s
+    {
+        int8_t rssi;                       //!< FSK/FLRC/BLE packet RSSI (dBm)
+        sx128x_pkt_status_errors_t errors; //!< FSK/FLRC/BLE packet error bit mask
+        sx128x_pkt_status_t status;        //!< FSK/FLRC/BLE packet status bit mask
+        sx128x_pkt_status_sync_t sync;     //!< FSK/FLRC/BLE packet sync bit mask
+    } sx128x_pkt_status_gfsk_flrc_ble_t;
 
-/**
+    /**
  * @brief Packet status parameters for GFSK packet type
  */
-typedef sx128x_pkt_status_gfsk_flrc_ble_t sx128x_pkt_status_gfsk_t;
+    typedef sx128x_pkt_status_gfsk_flrc_ble_t sx128x_pkt_status_gfsk_t;
 
-/**
+    /**
  * @brief Packet status parameters for FLRC packet type
  */
-typedef sx128x_pkt_status_gfsk_flrc_ble_t sx128x_pkt_status_flrc_t;
+    typedef sx128x_pkt_status_gfsk_flrc_ble_t sx128x_pkt_status_flrc_t;
 
-/**
+    /**
  * @brief Packet status parameters for BLE packet type
  */
-typedef sx128x_pkt_status_gfsk_flrc_ble_t sx128x_pkt_status_ble_t;
+    typedef sx128x_pkt_status_gfsk_flrc_ble_t sx128x_pkt_status_ble_t;
 
-/**
+    /**
  * @brief Packet status for LoRa and Ranging packet types
  */
-typedef struct sx128x_pkt_status_lora_ranging_s
-{
-    int8_t rssi;  //!< LoRa packet RSSI (dBm)
-    int8_t snr;   //!< LoRa packet SNR (dB)
-} sx128x_pkt_status_lora_ranging_t;
+    typedef struct sx128x_pkt_status_lora_ranging_s
+    {
+        int8_t rssi; //!< LoRa packet RSSI (dBm)
+        int8_t snr;  //!< LoRa packet SNR (dB)
+    } sx128x_pkt_status_lora_ranging_t;
 
-/**
+    /**
  * @brief Packet status for LoRa packet types
  */
-typedef sx128x_pkt_status_lora_ranging_t sx128x_pkt_status_lora_t;
+    typedef sx128x_pkt_status_lora_ranging_t sx128x_pkt_status_lora_t;
 
-/**
+    /**
  * @brief Packet status for Ranging packet types
  */
-typedef sx128x_pkt_status_lora_ranging_t sx128x_pkt_status_ranging_t;
+    typedef sx128x_pkt_status_lora_ranging_t sx128x_pkt_status_ranging_t;
 
-/**
+    /**
  * @brief Ranging roles for ranging packet type
  */
-typedef enum sx128x_ranging_role_e
-{
-    SX128X_RANGING_ROLE_SLV = 0,
-    SX128X_RANGING_ROLE_MST = 1,
-} sx128x_ranging_role_t;
+    typedef enum sx128x_ranging_role_e
+    {
+        SX128X_RANGING_ROLE_SLV = 0,
+        SX128X_RANGING_ROLE_MST = 1,
+    } sx128x_ranging_role_t;
 
-/**
+    /**
  * @brief Selector values to configure LNA regime
  */
-typedef enum sx128x_lna_settings_e
-{
-    //!< Allow maximum efficiency of sx128x (default)
-    SX128X_LNA_LOW_POWER_MODE,
-    //!< Allow to use highest three steps of LNA gain and increase current
-    //!< consumption
-    SX128X_LNA_HIGH_SENSITIVITY_MODE,
-} sx128x_lna_settings_t;
+    typedef enum sx128x_lna_settings_e
+    {
+        //!< Allow maximum efficiency of sx128x (default)
+        SX128X_LNA_LOW_POWER_MODE,
+        //!< Allow to use highest three steps of LNA gain and increase current
+        //!< consumption
+        SX128X_LNA_HIGH_SENSITIVITY_MODE,
+    } sx128x_lna_settings_t;
 
-/*
+    /*
  * -----------------------------------------------------------------------------
  * --- PUBLIC FUNCTIONS PROTOTYPES ---------------------------------------------
  */
 
-//
-// Operational Modes Functions
-//
+    //
+    // Operational Modes Functions
+    //
 
-/**
+    /**
  * @brief Set the chip in sleep mode
  *
  * @param [in]  context Chip implementation context
@@ -922,10 +923,10 @@ typedef enum sx128x_lna_settings_e
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_sleep( const void* context, const bool retain_data_buffer,
-                                  const bool retain_radio_configuration );
+    sx128x_status_t sx128x_set_sleep(const void *context, const bool retain_data_buffer,
+                                     const bool retain_radio_configuration);
 
-/**
+    /**
  * @brief Set the chip in stand-by mode
  *
  * @param [in]  context Chip implementation context
@@ -933,27 +934,27 @@ sx128x_status_t sx128x_set_sleep( const void* context, const bool retain_data_bu
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_standby( const void* context, const sx128x_standby_cfg_t cfg );
+    sx128x_status_t sx128x_set_standby(const void *context, const sx128x_standby_cfg_t cfg);
 
-/**
+    /**
  * @brief Wake the radio up from sleep mode.
  *
  * @param [in]  context Chip implementation context
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_wakeup( const void* context );
+    sx128x_status_t sx128x_wakeup(const void *context);
 
-/**
+    /**
  * @brief Set the chip in frequency synthesis mode
  *
  * @param [in] context Chip implementation context
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_fs( const void* context );
+    sx128x_status_t sx128x_set_fs(const void *context);
 
-/**
+    /**
  * @brief Set the chip in transmission mode
  *
  * @remark The packet type shall be configured with @ref sx128x_set_pkt_type before using this command.
@@ -974,9 +975,9 @@ sx128x_status_t sx128x_set_fs( const void* context );
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_tx( const void* context, sx128x_tick_size_t period_base, const uint16_t period_base_count );
+    sx128x_status_t sx128x_set_tx(const void *context, sx128x_tick_size_t period_base, const uint16_t period_base_count);
 
-/**
+    /**
  * @brief Set the chip in reception mode
  *
  * @remark The packet type shall be configured with @ref sx128x_set_pkt_type before using this command.
@@ -1002,9 +1003,9 @@ sx128x_status_t sx128x_set_tx( const void* context, sx128x_tick_size_t period_ba
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_rx( const void* context, sx128x_tick_size_t period_base, const uint16_t period_base_count );
+    sx128x_status_t sx128x_set_rx(const void *context, sx128x_tick_size_t period_base, const uint16_t period_base_count);
 
-/**
+    /**
  * @brief Set the chip in reception mode with duty cycling
  *
  * @remark The Rx mode duration is defined by:
@@ -1022,10 +1023,10 @@ sx128x_status_t sx128x_set_rx( const void* context, sx128x_tick_size_t period_ba
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_rx_duty_cycle( const void* context, sx128x_tick_size_t period_base,
-                                          const uint16_t rx_period_base_count, const uint16_t sleep_period_base_count );
+    sx128x_status_t sx128x_set_rx_duty_cycle(const void *context, sx128x_tick_size_t period_base,
+                                             const uint16_t rx_period_base_count, const uint16_t sleep_period_base_count);
 
-/**
+    /**
  * @brief Set the chip in CAD (Channel Activity Detection) mode
  *
  * @remark The LoRa packet type shall be selected with @ref sx128x_set_pkt_type before this function is called.
@@ -1036,9 +1037,9 @@ sx128x_status_t sx128x_set_rx_duty_cycle( const void* context, sx128x_tick_size_
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_cad( const void* context );
+    sx128x_status_t sx128x_set_cad(const void *context);
 
-/**
+    /**
  * @brief Set packet transmission to occur a programmable time after packet reception
  *
  * @param [in] context Chip implementation context
@@ -1046,9 +1047,9 @@ sx128x_status_t sx128x_set_cad( const void* context );
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_auto_tx( const void* context, uint16_t time_in_us );
+    sx128x_status_t sx128x_set_auto_tx(const void *context, uint16_t time_in_us);
 
-/**
+    /**
  * @brief Configure the chip to enter FS mode after transmission or reception
  *
  * @param [in] context Chip implementation context
@@ -1056,9 +1057,9 @@ sx128x_status_t sx128x_set_auto_tx( const void* context, uint16_t time_in_us );
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_auto_fs( const void* context, bool is_enabled );
+    sx128x_status_t sx128x_set_auto_fs(const void *context, bool is_enabled);
 
-/**
+    /**
  * @brief Set the chip in Tx continuous wave (RF tone).
  *
  * @remark The packet type shall be configured with @ref sx128x_set_pkt_type before using this command.
@@ -1067,9 +1068,9 @@ sx128x_status_t sx128x_set_auto_fs( const void* context, bool is_enabled );
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_tx_cw( const void* context );
+    sx128x_status_t sx128x_set_tx_cw(const void *context);
 
-/**
+    /**
  * @brief Set the chip in Tx infinite preamble (modulated signal).
  *
  * @remark The packet type shall be configured with @ref sx128x_set_pkt_type before using this command.
@@ -1080,13 +1081,13 @@ sx128x_status_t sx128x_set_tx_cw( const void* context );
  *
  * @warning This may be called SetTxContinuousPreamble in the device documentation.
  */
-sx128x_status_t sx128x_set_tx_infinite_preamble( const void* context );
+    sx128x_status_t sx128x_set_tx_infinite_preamble(const void *context);
 
-//
-// Register and Buffer Access
-//
+    //
+    // Register and Buffer Access
+    //
 
-/**
+    /**
  * @brief Write data into register memory space.
  *
  * @param [in] context Chip implementation context
@@ -1096,10 +1097,10 @@ sx128x_status_t sx128x_set_tx_infinite_preamble( const void* context );
  *
  * @see sx128x_read_register
  */
-sx128x_status_t sx128x_write_register( const void* context, const uint16_t address, const uint8_t* buffer,
-                                       const uint16_t size );
+    sx128x_status_t sx128x_write_register(const void *context, const uint16_t address, const uint8_t *buffer,
+                                          const uint16_t size);
 
-/**
+    /**
  * @brief Read data from register memory space.
  *
  * @param [in] context Chip implementation context
@@ -1109,10 +1110,10 @@ sx128x_status_t sx128x_write_register( const void* context, const uint16_t addre
  *
  * @see sx128x_write_register
  */
-sx128x_status_t sx128x_read_register( const void* context, const uint16_t address, uint8_t* buffer,
-                                      const uint16_t size );
+    sx128x_status_t sx128x_read_register(const void *context, const uint16_t address, uint8_t *buffer,
+                                         const uint16_t size);
 
-/**
+    /**
  * @brief Write data into radio Tx buffer memory space.
  *
  * @param [in] context Chip implementation context
@@ -1124,10 +1125,10 @@ sx128x_status_t sx128x_read_register( const void* context, const uint16_t addres
  *
  * @see sx128x_read_buffer
  */
-sx128x_status_t sx128x_write_buffer( const void* context, const uint8_t offset, const uint8_t* buffer,
-                                     const uint16_t size );
+    sx128x_status_t sx128x_write_buffer(const void *context, const uint8_t offset, const uint8_t *buffer,
+                                        const uint16_t size);
 
-/**
+    /**
  * @brief Read data from radio Rx buffer memory space.
  *
  * @param [in] context Chip implementation context
@@ -1139,13 +1140,13 @@ sx128x_status_t sx128x_write_buffer( const void* context, const uint8_t offset, 
  *
  * @see sx128x_write_buffer
  */
-sx128x_status_t sx128x_read_buffer( const void* context, const uint8_t offset, uint8_t* buffer, const uint16_t size );
+    sx128x_status_t sx128x_read_buffer(const void *context, const uint8_t offset, uint8_t *buffer, const uint16_t size);
 
-//
-// DIO and IRQ Control Functions
-//
+    //
+    // DIO and IRQ Control Functions
+    //
 
-/**
+    /**
  * @brief Set which interrupt signals are redirected to the dedicated DIO pin
  *
  * @remark By default, no interrupt signal is redirected.
@@ -1165,10 +1166,10 @@ sx128x_status_t sx128x_read_buffer( const void* context, const uint8_t offset, u
  *
  * @see sx128x_clear_irq_status, sx128x_get_irq_status
  */
-sx128x_status_t sx128x_set_dio_irq_params( const void* context, const uint16_t irq_mask, const uint16_t dio1_mask,
-                                           const uint16_t dio2_mask, const uint16_t dio3_mask );
+    sx128x_status_t sx128x_set_dio_irq_params(const void *context, const uint16_t irq_mask, const uint16_t dio1_mask,
+                                              const uint16_t dio2_mask, const uint16_t dio3_mask);
 
-/**
+    /**
  * @brief Get system interrupt status
  *
  * @param [in] context Chip implementation context
@@ -1178,9 +1179,9 @@ sx128x_status_t sx128x_set_dio_irq_params( const void* context, const uint16_t i
  *
  * @see sx128x_clear_irq_status
  */
-sx128x_status_t sx128x_get_irq_status( const void* context, sx128x_irq_mask_t* irq );
+    sx128x_status_t sx128x_get_irq_status(const void *context, sx128x_irq_mask_t *irq);
 
-/**
+    /**
  * @brief Clear selected system interrupts
  *
  * @param [in] context Chip implementation context
@@ -1190,9 +1191,9 @@ sx128x_status_t sx128x_get_irq_status( const void* context, sx128x_irq_mask_t* i
  *
  * @see sx128x_get_irq_status
  */
-sx128x_status_t sx128x_clear_irq_status( const void* context, const sx128x_irq_mask_t irq_mask );
+    sx128x_status_t sx128x_clear_irq_status(const void *context, const sx128x_irq_mask_t irq_mask);
 
-/**
+    /**
  * @brief Clears any radio irq status flags that are set and returns the flags that were cleared.
  *
  * @param [in] context Chip implementation context
@@ -1200,13 +1201,13 @@ sx128x_status_t sx128x_clear_irq_status( const void* context, const sx128x_irq_m
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_and_clear_irq_status( const void* context, sx128x_irq_mask_t* irq );
+    sx128x_status_t sx128x_get_and_clear_irq_status(const void *context, sx128x_irq_mask_t *irq);
 
-//
-// RF Modulation and Packet-Related Functions
-//
+    //
+    // RF Modulation and Packet-Related Functions
+    //
 
-/**
+    /**
  * @brief Set the RF frequency for future radio operations.
  *
  * @remark This command shall be called only after a packet type is selected.
@@ -1216,9 +1217,9 @@ sx128x_status_t sx128x_get_and_clear_irq_status( const void* context, sx128x_irq
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_rf_freq( const void* context, const uint32_t freq_in_hz );
+    sx128x_status_t sx128x_set_rf_freq(const void *context, const uint32_t freq_in_hz);
 
-/**
+    /**
  * @brief Set the RF frequency for future radio operations - parameter in PLL steps
  *
  * @remark This command shall be called only after a packet type is selected.
@@ -1228,9 +1229,9 @@ sx128x_status_t sx128x_set_rf_freq( const void* context, const uint32_t freq_in_
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_rf_freq_in_pll_steps( const void* context, const uint32_t freq );
+    sx128x_status_t sx128x_set_rf_freq_in_pll_steps(const void *context, const uint32_t freq);
 
-/**
+    /**
  * @brief Set the packet type
  *
  * @param [in] context Chip implementation context
@@ -1238,9 +1239,9 @@ sx128x_status_t sx128x_set_rf_freq_in_pll_steps( const void* context, const uint
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_pkt_type( const void* context, const sx128x_pkt_type_t pkt_type );
+    sx128x_status_t sx128x_set_pkt_type(const void *context, const sx128x_pkt_type_t pkt_type);
 
-/**
+    /**
  * @brief Get the current packet type
  *
  * @param [in] context Chip implementation context
@@ -1248,9 +1249,9 @@ sx128x_status_t sx128x_set_pkt_type( const void* context, const sx128x_pkt_type_
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_pkt_type( const void* context, sx128x_pkt_type_t* pkt_type );
+    sx128x_status_t sx128x_get_pkt_type(const void *context, sx128x_pkt_type_t *pkt_type);
 
-/**
+    /**
  * @brief Set the parameters for TX power and power amplifier ramp time
  *
  * @param [in] context Chip implementation context
@@ -1259,10 +1260,10 @@ sx128x_status_t sx128x_get_pkt_type( const void* context, sx128x_pkt_type_t* pkt
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_tx_params( const void* context, const int8_t pwr_in_dbm,
-                                      const sx128x_ramp_time_t ramp_time );
+    sx128x_status_t sx128x_set_tx_params(const void *context, const int8_t pwr_in_dbm,
+                                         const sx128x_ramp_time_t ramp_time);
 
-/**
+    /**
  * @brief Set the modulation parameters for GFSK packets
  *
  * @remark The command @ref sx128x_set_pkt_type must be called prior to this
@@ -1273,9 +1274,9 @@ sx128x_status_t sx128x_set_tx_params( const void* context, const int8_t pwr_in_d
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_gfsk_mod_params( const void* context, const sx128x_mod_params_gfsk_t* params );
+    sx128x_status_t sx128x_set_gfsk_mod_params(const void *context, const sx128x_mod_params_gfsk_t *params);
 
-/**
+    /**
  * @brief Set the modulation parameters for LoRa packets
  *
  * @remark The command @ref sx128x_set_pkt_type must be called prior to this one.
@@ -1285,9 +1286,9 @@ sx128x_status_t sx128x_set_gfsk_mod_params( const void* context, const sx128x_mo
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_lora_mod_params( const void* context, const sx128x_mod_params_lora_t* params );
+    sx128x_status_t sx128x_set_lora_mod_params(const void *context, const sx128x_mod_params_lora_t *params);
 
-/**
+    /**
  * @brief Set the modulation parameters for ranging packets
  *
  * @remark The command @ref sx128x_set_pkt_type must be called prior to this one.
@@ -1297,13 +1298,13 @@ sx128x_status_t sx128x_set_lora_mod_params( const void* context, const sx128x_mo
  *
  * @returns Operation status
  */
-static inline sx128x_status_t sx128x_set_ranging_mod_params( const void*                        context,
-                                                             const sx128x_mod_params_ranging_t* params )
-{
-    return sx128x_set_lora_mod_params( context, params );
-}
+    static inline sx128x_status_t sx128x_set_ranging_mod_params(const void *context,
+                                                                const sx128x_mod_params_ranging_t *params)
+    {
+        return sx128x_set_lora_mod_params(context, params);
+    }
 
-/**
+    /**
  * @brief Set the modulation parameters for FLRC packets
  *
  * @remark The command @ref sx128x_set_pkt_type must be called prior to this one.
@@ -1313,9 +1314,9 @@ static inline sx128x_status_t sx128x_set_ranging_mod_params( const void*        
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_flrc_mod_params( const void* context, const sx128x_mod_params_flrc_t* params );
+    sx128x_status_t sx128x_set_flrc_mod_params(const void *context, const sx128x_mod_params_flrc_t *params);
 
-/**
+    /**
  * @brief Set the modulation parameters for BLE packets
  *
  * @remark The command @ref sx128x_set_pkt_type must be called prior to this one.
@@ -1325,9 +1326,9 @@ sx128x_status_t sx128x_set_flrc_mod_params( const void* context, const sx128x_mo
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_ble_mod_params( const void* context, const sx128x_mod_params_ble_t* params );
+    sx128x_status_t sx128x_set_ble_mod_params(const void *context, const sx128x_mod_params_ble_t *params);
 
-/**
+    /**
  * @brief Set the packet parameters for GFSK packets
  *
  * @remark The command @ref sx128x_set_pkt_type must be called prior to this one.
@@ -1337,9 +1338,9 @@ sx128x_status_t sx128x_set_ble_mod_params( const void* context, const sx128x_mod
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_gfsk_pkt_params( const void* context, const sx128x_pkt_params_gfsk_t* params );
+    sx128x_status_t sx128x_set_gfsk_pkt_params(const void *context, const sx128x_pkt_params_gfsk_t *params);
 
-/**
+    /**
  * @brief Set the packet parameters for LoRa packets
  *
  * @remark The command @ref sx128x_set_pkt_type must be called prior to this one.
@@ -1349,9 +1350,9 @@ sx128x_status_t sx128x_set_gfsk_pkt_params( const void* context, const sx128x_pk
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_lora_pkt_params( const void* context, const sx128x_pkt_params_lora_t* params );
+    sx128x_status_t sx128x_set_lora_pkt_params(const void *context, const sx128x_pkt_params_lora_t *params);
 
-/**
+    /**
  * @brief Set the packet parameters for ranging packets
  *
  * @remark The command @ref sx128x_set_pkt_type must be called prior to this one.
@@ -1361,13 +1362,13 @@ sx128x_status_t sx128x_set_lora_pkt_params( const void* context, const sx128x_pk
  *
  * @returns Operation status
  */
-static inline sx128x_status_t sx128x_set_ranging_pkt_params( const void*                        context,
-                                                             const sx128x_pkt_params_ranging_t* params )
-{
-    return sx128x_set_lora_pkt_params( context, params );
-}
+    static inline sx128x_status_t sx128x_set_ranging_pkt_params(const void *context,
+                                                                const sx128x_pkt_params_ranging_t *params)
+    {
+        return sx128x_set_lora_pkt_params(context, params);
+    }
 
-/**
+    /**
  * @brief Set the packet parameters for FLRC packets
  *
  * @remark The command @ref sx128x_set_pkt_type must be called prior to this one.
@@ -1377,9 +1378,9 @@ static inline sx128x_status_t sx128x_set_ranging_pkt_params( const void*        
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_flrc_pkt_params( const void* context, const sx128x_pkt_params_flrc_t* params );
+    sx128x_status_t sx128x_set_flrc_pkt_params(const void *context, const sx128x_pkt_params_flrc_t *params);
 
-/**
+    /**
  * @brief Set the packet parameters for BLE packets
  *
  * @remark The command @ref sx128x_set_pkt_type must be called prior to this one.
@@ -1389,9 +1390,9 @@ sx128x_status_t sx128x_set_flrc_pkt_params( const void* context, const sx128x_pk
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_ble_pkt_params( const void* context, const sx128x_pkt_params_ble_t* params );
+    sx128x_status_t sx128x_set_ble_pkt_params(const void *context, const sx128x_pkt_params_ble_t *params);
 
-/**
+    /**
  * @brief Set the parameters for CAD operation
  *
  * @remark The command @ref sx128x_set_pkt_type must be called prior to this one.
@@ -1401,9 +1402,9 @@ sx128x_status_t sx128x_set_ble_pkt_params( const void* context, const sx128x_pkt
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_cad_params( const void* context, const sx128x_lora_cad_params_t* params );
+    sx128x_status_t sx128x_set_cad_params(const void *context, const sx128x_lora_cad_params_t *params);
 
-/**
+    /**
  * @brief Set buffer start addresses for both Tx and Rx operations
  *
  * @param [in] context Chip implementation context
@@ -1412,14 +1413,14 @@ sx128x_status_t sx128x_set_cad_params( const void* context, const sx128x_lora_ca
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_buffer_base_address( const void* context, const uint8_t tx_base_address,
-                                                const uint8_t rx_base_address );
+    sx128x_status_t sx128x_set_buffer_base_address(const void *context, const uint8_t tx_base_address,
+                                                   const uint8_t rx_base_address);
 
-//
-// Communication Status Information
-//
+    //
+    // Communication Status Information
+    //
 
-/**
+    /**
  * @brief Get the chip status
  *
  * @param [in] context Chip implementation context
@@ -1427,9 +1428,9 @@ sx128x_status_t sx128x_set_buffer_base_address( const void* context, const uint8
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_status( const void* context, sx128x_chip_status_t* radio_status );
+    sx128x_status_t sx128x_get_status(const void *context, sx128x_chip_status_t *radio_status);
 
-/**
+    /**
  * @brief Get the current Rx buffer status
  *
  * @details This function is used to get the length of the received payload and the start address to be used when
@@ -1445,9 +1446,9 @@ sx128x_status_t sx128x_get_status( const void* context, sx128x_chip_status_t* ra
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_rx_buffer_status( const void* context, sx128x_rx_buffer_status_t* rx_buffer_status );
+    sx128x_status_t sx128x_get_rx_buffer_status(const void *context, sx128x_rx_buffer_status_t *rx_buffer_status);
 
-/**
+    /**
  * @brief May be used when using implicit header mode to retrieve the previously-configured payload length.
  *
  * @remark This may be used if the previously-configured payload length wasn't stored by the application.
@@ -1457,9 +1458,9 @@ sx128x_status_t sx128x_get_rx_buffer_status( const void* context, sx128x_rx_buff
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_lora_implicit_payload_len( const void* context, uint8_t* payload_len );
+    sx128x_status_t sx128x_get_lora_implicit_payload_len(const void *context, uint8_t *payload_len);
 
-/**
+    /**
  * @brief Get the status of the last GFSK packet received
  *
  * @param [in] context Chip implementation context
@@ -1467,9 +1468,9 @@ sx128x_status_t sx128x_get_lora_implicit_payload_len( const void* context, uint8
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_gfsk_pkt_status( const void* context, sx128x_pkt_status_gfsk_t* pkt_status );
+    sx128x_status_t sx128x_get_gfsk_pkt_status(const void *context, sx128x_pkt_status_gfsk_t *pkt_status);
 
-/**
+    /**
  * @brief Get the status of the last LoRa packet received
  *
  * @param [in] context Chip implementation context
@@ -1477,9 +1478,9 @@ sx128x_status_t sx128x_get_gfsk_pkt_status( const void* context, sx128x_pkt_stat
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_lora_pkt_status( const void* context, sx128x_pkt_status_lora_t* pkt_status );
+    sx128x_status_t sx128x_get_lora_pkt_status(const void *context, sx128x_pkt_status_lora_t *pkt_status);
 
-/**
+    /**
  * @brief Get the status of the last ranging packet received
  *
  * @param [in] context Chip implementation context
@@ -1487,13 +1488,13 @@ sx128x_status_t sx128x_get_lora_pkt_status( const void* context, sx128x_pkt_stat
  *
  * @returns Operation status
  */
-static inline sx128x_status_t sx128x_get_ranging_pkt_status( const void*                  context,
-                                                             sx128x_pkt_status_ranging_t* pkt_status )
-{
-    return sx128x_get_lora_pkt_status( context, pkt_status );
-}
+    static inline sx128x_status_t sx128x_get_ranging_pkt_status(const void *context,
+                                                                sx128x_pkt_status_ranging_t *pkt_status)
+    {
+        return sx128x_get_lora_pkt_status(context, pkt_status);
+    }
 
-/**
+    /**
  * @brief Get the status of the last FLRC packet received
  *
  * @param [in] context Chip implementation context
@@ -1501,9 +1502,9 @@ static inline sx128x_status_t sx128x_get_ranging_pkt_status( const void*        
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_flrc_pkt_status( const void* context, sx128x_pkt_status_flrc_t* pkt_status );
+    sx128x_status_t sx128x_get_flrc_pkt_status(const void *context, sx128x_pkt_status_flrc_t *pkt_status);
 
-/**
+    /**
  * @brief Get the status of the last BLE packet received
  *
  * @param [in] context Chip implementation context
@@ -1511,9 +1512,9 @@ sx128x_status_t sx128x_get_flrc_pkt_status( const void* context, sx128x_pkt_stat
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_ble_pkt_status( const void* context, sx128x_pkt_status_ble_t* pkt_status );
+    sx128x_status_t sx128x_get_ble_pkt_status(const void *context, sx128x_pkt_status_ble_t *pkt_status);
 
-/**
+    /**
  * @brief Get the instantaneous RSSI value.
  *
  * @remark This function shall be called when in Rx mode.
@@ -1525,22 +1526,22 @@ sx128x_status_t sx128x_get_ble_pkt_status( const void* context, sx128x_pkt_statu
  *
  * @see sx128x_set_rx
  */
-sx128x_status_t sx128x_get_rssi_inst( const void* context, int16_t* rssi );
+    sx128x_status_t sx128x_get_rssi_inst(const void *context, int16_t *rssi);
 
-//
-// Miscellaneous
-//
+    //
+    // Miscellaneous
+    //
 
-/**
+    /**
  * @brief Perform a hard reset of the chip
  *
  * @param [in] context Chip implementation context
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_reset( const void* context );
+    sx128x_status_t sx128x_reset(const void *context);
 
-/**
+    /**
  * @brief Put the transceiver in long preamble mode
  *
  * @param [in] context Chip implementation context
@@ -1548,9 +1549,9 @@ sx128x_status_t sx128x_reset( const void* context );
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_long_preamble( const void* context, const bool state );
+    sx128x_status_t sx128x_set_long_preamble(const void *context, const bool state);
 
-/**
+    /**
  * @brief Configure the regulator mode to be used
  *
  * @remark This function shall be called to set the regulator mode.
@@ -1560,9 +1561,9 @@ sx128x_status_t sx128x_set_long_preamble( const void* context, const bool state 
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_reg_mode( const void* context, const sx128x_reg_mod_t mode );
+    sx128x_status_t sx128x_set_reg_mode(const void *context, const sx128x_reg_mod_t mode);
 
-/**
+    /**
  * @brief Configure the LNA
  *
  * @param [in] context Chip implementation context
@@ -1570,9 +1571,9 @@ sx128x_status_t sx128x_set_reg_mode( const void* context, const sx128x_reg_mod_t
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_lna_settings( const void* context, sx128x_lna_settings_t settings );
+    sx128x_status_t sx128x_set_lna_settings(const void *context, sx128x_lna_settings_t settings);
 
-/**
+    /**
  * @brief Save the transceiver registers, to permit restoration after wakeup
  *
  * @remark Must be called before calling sx128x_set_sleep, with SX128X_SLEEP_CFG_DATA_RETENTION.
@@ -1583,9 +1584,9 @@ sx128x_status_t sx128x_set_lna_settings( const void* context, sx128x_lna_setting
  *
  * @see sx128x_set_sleep
  */
-sx128x_status_t sx128x_save_context( const void* context );
+    sx128x_status_t sx128x_save_context(const void *context);
 
-/**
+    /**
  * @brief Select either master or slave ranging role
  *
  * @param [in] context Chip implementation context
@@ -1593,9 +1594,9 @@ sx128x_status_t sx128x_save_context( const void* context );
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_ranging_role( const void* context, const sx128x_ranging_role_t role );
+    sx128x_status_t sx128x_set_ranging_role(const void *context, const sx128x_ranging_role_t role);
 
-/**
+    /**
  * @brief Activate or deactivate the advanced ranging mode
  *
  * @param [in] context Chip implementation context
@@ -1603,9 +1604,9 @@ sx128x_status_t sx128x_set_ranging_role( const void* context, const sx128x_rangi
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_adv_ranging( const void* context, const bool state );
+    sx128x_status_t sx128x_set_adv_ranging(const void *context, const bool state);
 
-/**
+    /**
  * @brief Set the number of bit-errors tolerated in the GFSK or FLRC sync word
  *
  * @param [in] context Chip implementation context
@@ -1613,9 +1614,9 @@ sx128x_status_t sx128x_set_adv_ranging( const void* context, const bool state );
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_gfsk_flrc_sync_word_tolerance( const void* context, uint8_t tolerance );
+    sx128x_status_t sx128x_set_gfsk_flrc_sync_word_tolerance(const void *context, uint8_t tolerance);
 
-/**
+    /**
  * @brief Get the sx128x_gfsk_ble_br_bw_t value with bitrate and bandwidth immediately above the minimum requested one.
  *
  * @param [in] br Largest desired bitrate
@@ -1624,9 +1625,9 @@ sx128x_status_t sx128x_set_gfsk_flrc_sync_word_tolerance( const void* context, u
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_gfsk_br_bw_param( const uint32_t br, const uint32_t bw, sx128x_gfsk_ble_br_bw_t* param );
+    sx128x_status_t sx128x_get_gfsk_br_bw_param(const uint32_t br, const uint32_t bw, sx128x_gfsk_ble_br_bw_t *param);
 
-/**
+    /**
  * @brief Retrieve the largest modulation index param such that \f$ param <= 2 \times fdev / br \f$
  *
  * @param [in] br bitrate
@@ -1635,10 +1636,10 @@ sx128x_status_t sx128x_get_gfsk_br_bw_param( const uint32_t br, const uint32_t b
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_gfsk_mod_ind_param( const uint32_t br, const uint32_t fdev,
-                                               sx128x_gfsk_ble_mod_ind_t* param );
+    sx128x_status_t sx128x_get_gfsk_mod_ind_param(const uint32_t br, const uint32_t fdev,
+                                                  sx128x_gfsk_ble_mod_ind_t *param);
 
-/**
+    /**
  * @brief Get the sx128x_flrc_br_bw_t value with bitrate and bandwidth immediately above the minimum requested one.
  *
  * @param [in] br Largest desired bitrate
@@ -1647,18 +1648,18 @@ sx128x_status_t sx128x_get_gfsk_mod_ind_param( const uint32_t br, const uint32_t
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_flrc_br_bw_param( const uint32_t br, const uint32_t bw, sx128x_flrc_br_bw_t* param );
+    sx128x_status_t sx128x_get_flrc_br_bw_param(const uint32_t br, const uint32_t bw, sx128x_flrc_br_bw_t *param);
 
-/**
+    /**
  * @brief Get the actual value in Hertz of a given LoRa bandwidth
  *
  * @param [in] bw LoRa bandwidth parameter
  *
  * @returns Actual LoRa bandwidth in Hertz
  */
-uint32_t sx128x_get_lora_bw_in_hz( sx128x_lora_bw_t bw );
+    uint32_t sx128x_get_lora_bw_in_hz(sx128x_lora_bw_t bw);
 
-/**
+    /**
  * @brief Compute the numerator for LoRa time-on-air computation.
  *
  * @remark To get the actual time-on-air in second, this value has to be divided by the LoRa bandwidth in Hertz.
@@ -1668,10 +1669,10 @@ uint32_t sx128x_get_lora_bw_in_hz( sx128x_lora_bw_t bw );
  *
  * @returns LoRa time-on-air numerator
  */
-uint32_t sx128x_get_lora_time_on_air_numerator( const sx128x_pkt_params_lora_t* pkt_params,
-                                                const sx128x_mod_params_lora_t* mod_params );
+    uint32_t sx128x_get_lora_time_on_air_numerator(const sx128x_pkt_params_lora_t *pkt_params,
+                                                   const sx128x_mod_params_lora_t *mod_params);
 
-/**
+    /**
  * @brief Get the time on air in ms for LoRa transmission
  *
  * @param [in] pkt_params Pointer to a structure holding the LoRa packet parameters
@@ -1679,19 +1680,19 @@ uint32_t sx128x_get_lora_time_on_air_numerator( const sx128x_pkt_params_lora_t* 
  *
  * @returns Time-on-air value in ms for LoRa transmission
  */
-uint32_t sx128x_get_lora_time_on_air_in_ms( const sx128x_pkt_params_lora_t* pkt_params,
-                                            const sx128x_mod_params_lora_t* mod_params );
+    uint32_t sx128x_get_lora_time_on_air_in_ms(const sx128x_pkt_params_lora_t *pkt_params,
+                                               const sx128x_mod_params_lora_t *mod_params);
 
-/**
+    /**
  * @brief Get the bitrate in bit per second for a given sx128x_gfsk_br_bw_t parameter
  *
  * @param [in] br_bw GFSK bitrate/bandwidth parameter
  *
  * @returns Actual GFSK bitrate in bit per second
  */
-uint32_t sx128x_get_gfsk_br_in_bps( sx128x_gfsk_br_bw_t br_bw );
+    uint32_t sx128x_get_gfsk_br_in_bps(sx128x_gfsk_br_bw_t br_bw);
 
-/**
+    /**
  * @brief Compute the numerator for GFSK time-on-air computation.
  *
  * @remark To get the actual time-on-air in second, this value has to be divided by the GFSK bitrate in bits per
@@ -1701,9 +1702,9 @@ uint32_t sx128x_get_gfsk_br_in_bps( sx128x_gfsk_br_bw_t br_bw );
  *
  * @returns GFSK time-on-air numerator
  */
-uint32_t sx128x_get_gfsk_time_on_air_numerator( const sx128x_pkt_params_gfsk_t* pkt_params );
+    uint32_t sx128x_get_gfsk_time_on_air_numerator(const sx128x_pkt_params_gfsk_t *pkt_params);
 
-/**
+    /**
  * @brief Get the time on air in ms for GFSK transmission
  *
  * @param [in] pkt_params Pointer to a structure holding the GFSK packet parameters
@@ -1711,19 +1712,19 @@ uint32_t sx128x_get_gfsk_time_on_air_numerator( const sx128x_pkt_params_gfsk_t* 
  *
  * @returns Time-on-air value in ms for GFSK transmission
  */
-uint32_t sx128x_get_gfsk_time_on_air_in_ms( const sx128x_pkt_params_gfsk_t* pkt_params,
-                                            const sx128x_mod_params_gfsk_t* mod_params );
+    uint32_t sx128x_get_gfsk_time_on_air_in_ms(const sx128x_pkt_params_gfsk_t *pkt_params,
+                                               const sx128x_mod_params_gfsk_t *mod_params);
 
-/**
+    /**
  * @brief Get the bitrate in bits per second for a given sx128x_flrc_br_bw_t parameter
  *
  * @param [in] br_bw FLRC bitrate/bandwidth parameter
  *
  * @returns Actual FLRC bitrate in bits per second
  */
-uint32_t sx128x_get_flrc_br_in_bps( sx128x_flrc_br_bw_t br_bw );
+    uint32_t sx128x_get_flrc_br_in_bps(sx128x_flrc_br_bw_t br_bw);
 
-/**
+    /**
  * @brief Compute the numerator for FLRC time-on-air computation.
  *
  * @remark To get the actual time-on-air in second, this value has to be divided by the FLRC bitrate in bits per
@@ -1734,10 +1735,10 @@ uint32_t sx128x_get_flrc_br_in_bps( sx128x_flrc_br_bw_t br_bw );
  *
  * @returns FLRC time-on-air numerator or 0 if it fails to compute it
  */
-uint32_t sx128x_get_flrc_time_on_air_numerator( const sx128x_pkt_params_flrc_t* pkt_params,
-                                                const sx128x_mod_params_flrc_t* mod_params );
+    uint32_t sx128x_get_flrc_time_on_air_numerator(const sx128x_pkt_params_flrc_t *pkt_params,
+                                                   const sx128x_mod_params_flrc_t *mod_params);
 
-/**
+    /**
  * @brief Get the time on air in ms for FLRC transmission
  *
  * @param [in] pkt_params Pointer to a structure holding the FLRC packet parameters
@@ -1745,23 +1746,23 @@ uint32_t sx128x_get_flrc_time_on_air_numerator( const sx128x_pkt_params_flrc_t* 
  *
  * @returns Time-on-air value in ms for FLRC transmission
  */
-uint32_t sx128x_get_flrc_time_on_air_in_ms( const sx128x_pkt_params_flrc_t* pkt_params,
-                                            const sx128x_mod_params_flrc_t* mod_params );
+    uint32_t sx128x_get_flrc_time_on_air_in_ms(const sx128x_pkt_params_flrc_t *pkt_params,
+                                               const sx128x_mod_params_flrc_t *mod_params);
 
-/**
+    /**
  * @brief Get the number of PLL steps for a given frequency in Hertz
  *
  * @param [in] freq_in_hz Frequency in Hertz
  *
  * @returns Number of PLL steps
  */
-uint32_t sx128x_convert_freq_in_hz_to_pll_step( uint32_t freq_in_hz );
+    uint32_t sx128x_convert_freq_in_hz_to_pll_step(uint32_t freq_in_hz);
 
-//
-// Register access
-//
+    //
+    // Register access
+    //
 
-/**
+    /**
  * @brief Configure one of the GFSK sync words
  *
  * @param [in] context Chip implementation context
@@ -1771,10 +1772,10 @@ uint32_t sx128x_convert_freq_in_hz_to_pll_step( uint32_t freq_in_hz );
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_gfsk_sync_word( const void* context, const uint8_t sync_word_id, const uint8_t* sync_word,
-                                           const uint8_t sync_word_len );
+    sx128x_status_t sx128x_set_gfsk_sync_word(const void *context, const uint8_t sync_word_id, const uint8_t *sync_word,
+                                              const uint8_t sync_word_len);
 
-/**
+    /**
  * @brief Configure the LoRa sync word
  *
  * @param [in] context Chip implementation context
@@ -1782,9 +1783,9 @@ sx128x_status_t sx128x_set_gfsk_sync_word( const void* context, const uint8_t sy
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_lora_sync_word( const void* context, const uint8_t sync_word );
+    sx128x_status_t sx128x_set_lora_sync_word(const void *context, const uint8_t sync_word);
 
-/**
+    /**
  * @brief Configure the sync word used in FLRC packet
  *
  * @param [in] context Chip implementation context
@@ -1794,10 +1795,10 @@ sx128x_status_t sx128x_set_lora_sync_word( const void* context, const uint8_t sy
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_flrc_sync_word( const void* context, const uint8_t sync_word_id,
-                                           const uint8_t sync_word[4] );
+    sx128x_status_t sx128x_set_flrc_sync_word(const void *context, const uint8_t sync_word_id,
+                                              const uint8_t sync_word[4]);
 
-/**
+    /**
  * @brief Configure the BLE sync word
  *
  * @param [in] context Chip implementation context
@@ -1806,9 +1807,9 @@ sx128x_status_t sx128x_set_flrc_sync_word( const void* context, const uint8_t sy
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_ble_sync_word( const void* context, const uint8_t sync_word[4] );
+    sx128x_status_t sx128x_set_ble_sync_word(const void *context, const uint8_t sync_word[4]);
 
-/**
+    /**
  * @brief Configure the seed used to compute the GFSK packet CRC
  *
  * @param [in] context Chip implementation context
@@ -1816,9 +1817,9 @@ sx128x_status_t sx128x_set_ble_sync_word( const void* context, const uint8_t syn
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_gfsk_crc_seed( const void* context, uint16_t seed );
+    sx128x_status_t sx128x_set_gfsk_crc_seed(const void *context, uint16_t seed);
 
-/**
+    /**
  * @brief Configure the seed used to compute the FLRC packet CRC
  *
  * @param [in] context Chip implementation context
@@ -1826,9 +1827,9 @@ sx128x_status_t sx128x_set_gfsk_crc_seed( const void* context, uint16_t seed );
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_flrc_crc_seed( const void* context, uint32_t seed );
+    sx128x_status_t sx128x_set_flrc_crc_seed(const void *context, uint32_t seed);
 
-/**
+    /**
  * @brief Configure the seed used to compute the BLE packet CRC
  *
  * @param [in] context Chip implementation context
@@ -1836,9 +1837,9 @@ sx128x_status_t sx128x_set_flrc_crc_seed( const void* context, uint32_t seed );
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_ble_crc_seed( const void* context, uint32_t seed );
+    sx128x_status_t sx128x_set_ble_crc_seed(const void *context, uint32_t seed);
 
-/**
+    /**
  * @brief Configure the polynomial used to compute the GFSK packet CRC
  *
  * @param [in] context Chip implementation context
@@ -1846,9 +1847,9 @@ sx128x_status_t sx128x_set_ble_crc_seed( const void* context, uint32_t seed );
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_gfsk_crc_polynomial( const void* context, uint16_t polynomial );
+    sx128x_status_t sx128x_set_gfsk_crc_polynomial(const void *context, uint16_t polynomial);
 
-/**
+    /**
  * @brief Configure the GFSK or BLE whitening seed
  *
  * @param [in] context Chip implementation context
@@ -1856,9 +1857,9 @@ sx128x_status_t sx128x_set_gfsk_crc_polynomial( const void* context, uint16_t po
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_gfsk_ble_whitening_seed( const void* context, uint8_t seed );
+    sx128x_status_t sx128x_set_gfsk_ble_whitening_seed(const void *context, uint8_t seed);
 
-/**
+    /**
  * @brief Get the current packet length mode (header type)
  *
  * @param [in] context Chip implementation context
@@ -1866,9 +1867,9 @@ sx128x_status_t sx128x_set_gfsk_ble_whitening_seed( const void* context, uint8_t
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_lora_pkt_len_mode( const void* context, sx128x_lora_pkt_len_modes_t* header_type );
+    sx128x_status_t sx128x_get_lora_pkt_len_mode(const void *context, sx128x_lora_pkt_len_modes_t *header_type);
 
-/**
+    /**
  * @brief Get the LoRa packet length, as configured in the radio
  *
  * @param [in] context Chip implementation context
@@ -1879,9 +1880,9 @@ sx128x_status_t sx128x_get_lora_pkt_len_mode( const void* context, sx128x_lora_p
  * @remark For LoRa packets with no header, the length returned by sx128x_get_rx_buffer_status will be zero, so this can
  * be used instead
  */
-sx128x_status_t sx128x_get_lora_pkt_len( const void* context, uint8_t* pkt_len );
+    sx128x_status_t sx128x_get_lora_pkt_len(const void *context, uint8_t *pkt_len);
 
-/**
+    /**
  * @brief Determine the coding rate of the last received packet
  *
  * @param [in] context Chip implementation context
@@ -1893,9 +1894,9 @@ sx128x_status_t sx128x_get_lora_pkt_len( const void* context, uint8_t* pkt_len )
  * header. If called after receiving a LoRa packet in implicit mode, the coding rate will be obtained from the coding
  * rate configuration previously programmed through @ref sx128x_set_lora_pkt_params.
  */
-sx128x_status_t sx128x_get_lora_rx_pkt_cr( const void* context, sx128x_lora_ranging_cr_t* lora_incoming_cr );
+    sx128x_status_t sx128x_get_lora_rx_pkt_cr(const void *context, sx128x_lora_ranging_cr_t *lora_incoming_cr);
 
-/**
+    /**
  * @brief Determine if the last received packet was sent with a CRC
  *
  * @param [in] context Chip implementation context
@@ -1907,9 +1908,9 @@ sx128x_status_t sx128x_get_lora_rx_pkt_cr( const void* context, sx128x_lora_rang
  * header. If called after receiving a LoRa packet in implicit mode, the CRC presence will be obtained from the CRC
  * configuration previously programmed through @ref sx128x_set_lora_pkt_params.
  */
-sx128x_status_t sx128x_get_lora_rx_pkt_crc_present( const void* context, bool* is_lora_incoming_crc_present );
+    sx128x_status_t sx128x_get_lora_rx_pkt_crc_present(const void *context, bool *is_lora_incoming_crc_present);
 
-/**
+    /**
  * @brief Set the ranging address for ranging master operations
  *
  * @param [in] context Chip implementation context
@@ -1917,9 +1918,9 @@ sx128x_status_t sx128x_get_lora_rx_pkt_crc_present( const void* context, bool* i
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_ranging_master_address( const void* context, uint32_t address );
+    sx128x_status_t sx128x_set_ranging_master_address(const void *context, uint32_t address);
 
-/**
+    /**
  * @brief Set the ranging address for ranging slave operations
  *
  * @param [in] context Chip implementation context
@@ -1927,9 +1928,9 @@ sx128x_status_t sx128x_set_ranging_master_address( const void* context, uint32_t
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_ranging_slave_address( const void* context, uint32_t address );
+    sx128x_status_t sx128x_set_ranging_slave_address(const void *context, uint32_t address);
 
-/**
+    /**
  * @brief Set the number of bits of the ranging address that will be checked on ranging packet reception
  *
  * @param [in] context Chip implementation context
@@ -1937,9 +1938,9 @@ sx128x_status_t sx128x_set_ranging_slave_address( const void* context, uint32_t 
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_ranging_address_len( const void* context, sx128x_ranging_address_len_t len );
+    sx128x_status_t sx128x_set_ranging_address_len(const void *context, sx128x_ranging_address_len_t len);
 
-/**
+    /**
  * @brief Set the ranging calibration value that will be used when ranging
  *
  * @param [in] context Chip implementation context
@@ -1947,18 +1948,18 @@ sx128x_status_t sx128x_set_ranging_address_len( const void* context, sx128x_rang
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_ranging_calibration_value( const void* context, uint16_t calibration );
+    sx128x_status_t sx128x_set_ranging_calibration_value(const void *context, uint16_t calibration);
 
-/**
+    /**
  * @brief Preserve the ranging result for reading
  *
  * @param [in] context Chip implementation context
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_ranging_results_freeze( const void* context );
+    sx128x_status_t sx128x_ranging_results_freeze(const void *context);
 
-/**
+    /**
  * @brief Select whether raw or filtered ranging results are desired
  *
  * @param [in] context Chip implementation context
@@ -1966,9 +1967,9 @@ sx128x_status_t sx128x_ranging_results_freeze( const void* context );
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_set_ranging_result_type( const void* context, sx128x_ranging_result_type_t type );
+    sx128x_status_t sx128x_set_ranging_result_type(const void *context, sx128x_ranging_result_type_t type);
 
-/**
+    /**
  * @brief Read the contents of the ranging result registers
  *
  * @param [in] context Chip implementation context
@@ -1977,9 +1978,9 @@ sx128x_status_t sx128x_set_ranging_result_type( const void* context, sx128x_rang
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_ranging_result( const void* context, sx128x_ranging_result_type_t type, int32_t* result );
+    sx128x_status_t sx128x_get_ranging_result(const void *context, sx128x_ranging_result_type_t type, int32_t *result);
 
-/**
+    /**
  * @brief Read the contents of the ranging result, converted to centimeters
  *
  * @param [in] context Chip implementation context
@@ -1989,10 +1990,10 @@ sx128x_status_t sx128x_get_ranging_result( const void* context, sx128x_ranging_r
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_ranging_result_in_cm( const void* context, sx128x_ranging_result_type_t type,
-                                                 sx128x_lora_bw_t bw, int32_t* result );
+    sx128x_status_t sx128x_get_ranging_result_in_cm(const void *context, sx128x_ranging_result_type_t type,
+                                                    sx128x_lora_bw_t bw, int32_t *result);
 
-/**
+    /**
  * @brief Get the raw Frequency Error Indicator measurement
  *
  * @param [in]  context Chip implementation context
@@ -2003,12 +2004,12 @@ sx128x_status_t sx128x_get_ranging_result_in_cm( const void* context, sx128x_ran
  *
  * @returns Operation status
  */
-sx128x_status_t sx128x_get_lora_fei_raw( const void* context, int32_t* fei );
+    sx128x_status_t sx128x_get_lora_fei_raw(const void *context, int32_t *fei);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // SX128X_H
+#endif // SX128X_H
 
 /* --- EOF ------------------------------------------------------------------ */
